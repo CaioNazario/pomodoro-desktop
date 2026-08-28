@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin: 0; padding: 0; background: #06060700; }
+  body { -webkit-font-smoothing: antialiased; }
+  a { color: #e8a25c; text-decoration: none; }
+  a:hover { color: #f5c193; }
+  @keyframes breathe { 0%, 100% { opacity: .45 } 50% { opacity: .9 } }
+</style>
+</helmet>
+<div style="position: relative; width: 100%; height: 100vh; min-height: 480px; background: #060607; color: #f3f2ef; font-family: Geist, 'Helvetica Neue', Helvetica, sans-serif; overflow: hidden; display: grid; grid-template-rows: auto 1fr auto; user-select: none;">
+
+  <div style="position: absolute; inset: 0; background: radial-gradient(90% 70% at 50% 42%, rgba(255,255,255,0.035), rgba(0,0,0,0) 70%); pointer-events: none;"></div>
+
+  <header style="position: relative; z-index: 3; display: flex; align-items: center; justify-content: space-between; padding: 22px 28px; gap: 16px;">
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <button onClick="{{ toggleMenu }}" title="Menu (M)" style="width: 38px; height: 38px; display: grid; place-items: center; border-radius: 11px; border: 1px solid rgba(255,255,255,0.09); background: rgba(255,255,255,0.03); color: #cfcec9; cursor: pointer; transition: background .16s ease, border-color .16s ease, color .16s ease;" style-hover="background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.16); color: #fff;" style-active="transform: scale(.96);">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="4" width="12" height="1.4" fill="currentColor"></rect><rect x="2" y="7.3" width="12" height="1.4" fill="currentColor"></rect><rect x="2" y="10.6" width="12" height="1.4" fill="currentColor"></rect></svg>
+      </button>
+      <div style="display: flex; align-items: center; gap: 10px; padding: 8px 14px 8px 12px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.07); background: rgba(255,255,255,0.02);">
+        <span style="width: 7px; height: 7px; border-radius: 50%; background: {{ accent }}; animation: breathe 3.4s ease-in-out infinite;"></span>
+        <span style="font-family: 'Geist Mono', monospace; font-size: 13.5px; letter-spacing: .16em; text-transform: uppercase; color: #dedcd6;">{{ modeLabel }}</span>
+        <span style="width: 1px; height: 12px; background: rgba(255,255,255,0.12);"></span>
+        <span style="font-family: 'Geist Mono', monospace; font-size: 13.5px; letter-spacing: .08em; color: #b6b5b0; white-space: nowrap;">{{ sessionLabel }}</span>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 22px; font-family: 'Geist Mono', monospace; font-size: 13px; letter-spacing: .12em; color: #b6b5b0; text-transform: uppercase;">
+      <span>Espaço · iniciar</span>
+      <span>R · reiniciar</span>
+      <span>S · pular</span>
+      <button onClick="{{ togglePopup }}" style="font: inherit; letter-spacing: .12em; text-transform: uppercase; padding: 7px 12px; border-radius: 9px; border: 1px solid rgba(255,255,255,0.09); background: rgba(255,255,255,0.02); color: #dedcd6; cursor: pointer; transition: color .16s ease, border-color .16s ease;" style-hover="color: #fff; border-color: rgba(255,255,255,0.2);">Widget</button>
+    </div>
+  </header>
+
+  <main style="position: relative; z-index: 2; display: grid; place-items: center; padding: 8px 32px;">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: clamp(18px, 4.4vh, 46px);">
+
+      <div style="position: relative; width: min(44vh, 38vw, 460px); aspect-ratio: 1;">
+        <svg viewBox="0 0 480 480" style="width: 100%; height: 100%; display: block; overflow: visible;">
+          <circle cx="240" cy="240" r="226" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="2"></circle>
+          <g stroke-linecap="butt">
+            <sc-for list="{{ ticks }}" as="t" hint-placeholder-count="60">
+              <line x1="{{ t.x1 }}" y1="{{ t.y1 }}" x2="{{ t.x2 }}" y2="{{ t.y2 }}" stroke="{{ t.color }}" stroke-width="{{ t.w }}"></line>
+            </sc-for>
+          </g>
+          <circle cx="240" cy="240" r="226" fill="none" stroke="{{ accent }}" stroke-width="3" stroke-linecap="round" stroke-dasharray="{{ circumference }}" stroke-dashoffset="{{ dashOffset }}" transform="rotate(-90 240 240)" opacity="0.95"></circle>
+        </svg>
+        <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;">
+          <span style="font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: #5f5f66;">{{ stateLabel }}</span>
+          <span style="font-family: Geist, sans-serif; font-weight: 300; font-size: min(11vh, 104px); line-height: .92; letter-spacing: -0.035em; font-variant-numeric: tabular-nums; color: #fbfaf7;">{{ clock }}</span>
+          <span style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: .1em; color: #6c6c73;">termina {{ endsAt }}</span>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <button onClick="{{ reset }}" title="Reiniciar (R)" style="width: 54px; height: 54px; display: grid; place-items: center; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.025); color: #bfbeb9; cursor: pointer; transition: background .16s ease, color .16s ease, border-color .16s ease;" style-hover="background: rgba(255,255,255,0.07); color: #fff; border-color: rgba(255,255,255,0.2);" style-active="transform: scale(.95);">
+          <svg width="17" height="17" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10a6 6 0 1 0 2.2-4.65" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path><path d="M3.6 3.6v3.4h3.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </button>
+        <button onClick="{{ toggleRun }}" title="Iniciar / pausar (Espaço)" style="width: 76px; height: 76px; display: grid; place-items: center; border-radius: 50%; border: none; background: {{ accent }}; color: #100b05; cursor: pointer; box-shadow: 0 10px 34px rgba(0,0,0,0.55); transition: transform .16s ease, filter .16s ease;" style-hover="filter: brightness(1.08);" style-active="transform: scale(.96);">
+          {{ primaryIcon }}
+        </button>
+        <button onClick="{{ skip }}" title="Pular sessão (S)" style="width: 54px; height: 54px; display: grid; place-items: center; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.025); color: #bfbeb9; cursor: pointer; transition: background .16s ease, color .16s ease, border-color .16s ease;" style-hover="background: rgba(255,255,255,0.07); color: #fff; border-color: rgba(255,255,255,0.2);" style-active="transform: scale(.95);">
+          <svg width="17" height="17" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 4.5 13 10l-8 5.5z" fill="currentColor"></path><rect x="14.2" y="4.5" width="1.6" height="11" fill="currentColor"></rect></svg>
+        </button>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <sc-for list="{{ cycleDots }}" as="d" hint-placeholder-count="4">
+          <span style="width: {{ d.size }}; height: 6px; border-radius: 999px; background: {{ d.color }}; transition: background .3s ease, width .3s ease;"></span>
+        </sc-for>
+      </div>
+    </div>
+  </main>
+
+  <footer style="position: relative; z-index: 2; display: flex; align-items: flex-end; justify-content: space-between; padding: 24px 28px 26px; font-family: 'Geist Mono', monospace; font-size: 13.5px; letter-spacing: .1em; text-transform: uppercase; color: #b6b5b0;">
+    <div style="display: flex; gap: 26px; white-space: nowrap;">
+      <span>Hoje · {{ doneToday }} sessões</span>
+      <span>Acumulado · {{ focusToday }}</span>
+    </div>
+    <div style="display: flex; gap: 22px; white-space: nowrap;">
+      <span>{{ curFocus }} / {{ curBreak }} min</span>
+      <span style="color: #dedcd6; white-space: nowrap;">Ciclo {{ cycleLabel }} · {{ durModeLabel }}</span>
+    </div>
+  </footer>
+
+  <div style="position: absolute; inset: 0; z-index: 8; background: rgba(4,4,5,0.55); backdrop-filter: blur(2px); opacity: {{ scrimOpacity }}; pointer-events: {{ menuPointer }}; transition: opacity .18s ease;" onClick="{{ closeMenu }}"></div>
+
+  <div style="position: absolute; top: 68px; left: 24px; z-index: 9; box-sizing: border-box; width: 300px; max-height: calc(100vh - 96px); overflow-y: auto; padding: 8px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); background: #0d0d10; box-shadow: 0 24px 60px rgba(0,0,0,0.7); opacity: {{ menuOpacity }}; transform: {{ menuTransform }}; pointer-events: {{ menuPointer }}; transition: opacity .16s ease, transform .18s cubic-bezier(.2,.8,.2,1);">
+    <div style="padding: 10px 12px 8px; font-family: 'Geist Mono', monospace; font-size: 10.5px; letter-spacing: .22em; text-transform: uppercase; color: #56565d;">Timer</div>
+    <button onClick="{{ toggleRun }}" style="width: 100%; display: flex; align-items: center; gap: 11px; padding: 9px 12px; border: none; border-radius: 9px; background: transparent; color: #eceae5; font: 400 13.5px Geist, sans-serif; text-align: left; cursor: pointer; transition: background .14s ease;" style-hover="background: rgba(255,255,255,0.07);">
+      <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 3.4 12.4 8 4 12.6z" fill="currentColor"></path></svg>
+      <span style="flex: 1;">{{ runItemLabel }}</span>
+      <span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #5c5c63;">Espaço</span>
+    </button>
+    <button onClick="{{ reset }}" style="width: 100%; display: flex; align-items: center; gap: 11px; padding: 9px 12px; border: none; border-radius: 9px; background: transparent; color: #eceae5; font: 400 13.5px Geist, sans-serif; text-align: left; cursor: pointer; transition: background .14s ease;" style-hover="background: rgba(255,255,255,0.07);">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8a5 5 0 1 0 1.9-3.9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path><path d="M2.7 2.8v2.8h2.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      <span style="flex: 1;">Reiniciar sessão</span>
+      <span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #5c5c63;">R</span>
+    </button>
+    <button onClick="{{ skip }}" style="width: 100%; display: flex; align-items: center; gap: 11px; padding: 9px 12px; border: none; border-radius: 9px; background: transparent; color: #eceae5; font: 400 13.5px Geist, sans-serif; text-align: left; cursor: pointer; transition: background .14s ease;" style-hover="background: rgba(255,255,255,0.07);">
+      <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 3.6 10.4 8 4 12.4z" fill="currentColor"></path><rect x="11.2" y="3.6" width="1.4" height="8.8" fill="currentColor"></rect></svg>
+      <span style="flex: 1;">Pular para pausa</span>
+      <span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #5c5c63;">S</span>
+    </button>
+
+    <div style="height: 1px; margin: 7px 10px; background: rgba(255,255,255,0.08);"></div>
+    <div style="padding: 8px 12px 6px; font-family: 'Geist Mono', monospace; font-size: 10.5px; letter-spacing: .22em; text-transform: uppercase; color: #56565d;">Sessões</div>
+
+    <div style="display: flex; align-items: center; gap: 11px; padding: 9px 12px; color: #eceae5; font-size: 13.5px;">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="5.6" stroke="currentColor" stroke-width="1.4"></circle><path d="M8 5v3.2l2.1 1.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg>
+      <span style="flex: 1; white-space: nowrap;">Sessões no ciclo</span>
+      <div style="display: flex; align-items: center; gap: 2px;">
+        <button onClick="{{ countDown }}" style="width: 22px; height: 22px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #cfcec9; cursor: pointer; line-height: 1;" style-hover="background: rgba(255,255,255,0.08);">–</button>
+        <input type="text" inputMode="numeric" value="{{ countText }}" onChange="{{ countInput }}" onBlur="{{ countCommit }}" style="width: 42px; height: 22px; text-align: center; border-radius: 7px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); color: #ecebe6; font-family: 'Geist Mono', monospace; font-size: 12px; outline: none;" style-focus="border-color: rgba(255,255,255,0.28);" />
+        <button onClick="{{ countUp }}" style="width: 22px; height: 22px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #cfcec9; cursor: pointer; line-height: 1;" style-hover="background: rgba(255,255,255,0.08);">+</button>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 4px; margin: 4px 12px 8px; padding: 3px; border-radius: 9px; background: rgba(255,255,255,0.045);">
+      <button onClick="{{ setGlobal }}" style="flex: 1; padding: 6px 0; border: none; border-radius: 7px; background: {{ globalBg }}; color: {{ globalFg }}; font: 500 11.5px 'Geist Mono', monospace; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; transition: background .16s ease, color .16s ease;">Global</button>
+      <button onClick="{{ setIndividual }}" style="flex: 1; padding: 6px 0; border: none; border-radius: 7px; background: {{ indivBg }}; color: {{ indivFg }}; font: 500 11.5px 'Geist Mono', monospace; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; transition: background .16s ease, color .16s ease;">Individual</button>
+    </div>
+
+    <sc-if value="{{ isGlobal }}" hint-placeholder-val="{{ true }}">
+      <div>
+        <div style="display: flex; align-items: center; gap: 11px; padding: 8px 12px; color: #eceae5; font-size: 13.5px;">
+          <span style="flex: 1;">Todas as sessões</span>
+          <div style="display: flex; align-items: center; gap: 2px;">
+            <button onClick="{{ focusDown }}" style="width: 22px; height: 22px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #cfcec9; cursor: pointer; line-height: 1;" style-hover="background: rgba(255,255,255,0.08);">–</button>
+            <span style="min-width: 54px; text-align: center; font-family: 'Geist Mono', monospace; font-size: 12px; color: #b9b8b2;">{{ focusMin }} min</span>
+            <button onClick="{{ focusUp }}" style="width: 22px; height: 22px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #cfcec9; cursor: pointer; line-height: 1;" style-hover="background: rgba(255,255,255,0.08);">+</button>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 11px; padding: 8px 12px; color: #eceae5; font-size: 13.5px;">
+          <span style="flex: 1;">Todas as pausas</span>
+          <div style="display: flex; align-items: center; gap: 2px;">
+            <button onClick="{{ breakDown }}" style="width: 22px; height: 22px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #cfcec9; cursor: pointer; line-height: 1;" style-hover="background: rgba(255,255,255,0.08);">–</button>
+            <span style="min-width: 54px; text-align: center; font-family: 'Geist Mono', monospace; font-size: 12px; color: #b9b8b2;">{{ breakMin }} min</span>
+            <button onClick="{{ breakUp }}" style="width: 22px; height: 22px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #cfcec9; cursor: pointer; line-height: 1;" style-hover="background: rgba(255,255,255,0.08);">+</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isIndividual }}" hint-placeholder-val="{{ true }}">
+      <div style="max-height: 224px; overflow-y: auto; margin: 0 4px; padding: 0 2px;">
+        <div style="display: flex; align-items: center; padding: 0 8px 6px; font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: #4f4f56;">
+          <span style="flex: 1;">Sessão</span>
+          <span style="width: 68px; text-align: center;">Foco</span>
+          <span style="width: 68px; text-align: center;">Pausa</span>
+        </div>
+        <sc-for list="{{ plan }}" as="p" hint-placeholder-count="4">
+          <div style="display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-radius: 9px; background: {{ p.rowBg }};">
+            <span style="flex: 1; display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: #d9d8d3; white-space: nowrap;">
+              <span style="width: 5px; height: 5px; border-radius: 50%; background: {{ p.dot }};"></span>
+              {{ p.n }}
+            </span>
+            <div style="width: 68px; display: flex; align-items: center; justify-content: center; gap: 1px;">
+              <button onClick="{{ p.fDown }}" style="width: 19px; height: 19px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.09); background: transparent; color: #b6b5b0; font-size: 11px; cursor: pointer; line-height: 1;" style-hover="background: rgba(255,255,255,0.08);">–</button>
+              <span style="min-width: 34px; text-align: center; font-family: 'Geist Mono', monospace; font-size: 11.5px; color: #ecebe6;">{{ p.focus }}</span>
+              <button onClick="{{ p.fUp }}" style="width: 19px; height: 19px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.09); background: transparent; color: #b6b5b0; font-size: 11px; cursor: pointer; line-height: 1;" style-hover="background: rgba(255,255,255,0.08);">+</button>
+            </div>
+            <div style="width: 68px; display: flex; align-items: center; justify-content: center; gap: 1px;">
+              <button onClick="{{ p.bDown }}" style="width: 19px; height: 19px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.09); background: transparent; color: #b6b5b0; font-size: 11px; cursor: pointer; line-height: 1;" style-hover="background: rgba(255,255,255,0.08);">–</button>
+              <span style="min-width: 34px; text-align: center; font-family: 'Geist Mono', monospace; font-size: 11.5px; color: #b9b8b2;">{{ p.rest }}</span>
+              <button onClick="{{ p.bUp }}" style="width: 19px; height: 19px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.09); background: transparent; color: #b6b5b0; font-size: 11px; cursor: pointer; line-height: 1;" style-hover="background: rgba(255,255,255,0.08);">+</button>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="padding: 6px 12px 2px; font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #4f4f56;">Total do ciclo · {{ planTotal }}</div>
+    </sc-if>
+    <button onClick="{{ toggleAuto }}" style="width: 100%; display: flex; align-items: center; gap: 11px; padding: 9px 12px; border: none; border-radius: 9px; background: transparent; color: #eceae5; font: 400 13.5px Geist, sans-serif; text-align: left; cursor: pointer; transition: background .14s ease;" style-hover="background: rgba(255,255,255,0.07);">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 11.5 8 4l5 7.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path></svg>
+      <span style="flex: 1;">Iniciar automaticamente</span>
+      <span style="width: 30px; height: 17px; border-radius: 999px; background: {{ autoTrack }}; display: flex; align-items: center; padding: 2px; transition: background .18s ease;">
+        <span style="width: 13px; height: 13px; border-radius: 50%; background: #0c0c0e; transform: {{ autoKnob }}; transition: transform .18s ease;"></span>
+      </span>
+    </button>
+
+    <div style="height: 1px; margin: 7px 10px; background: rgba(255,255,255,0.08);"></div>
+    <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 8px 12px 6px;">
+      <span style="font-family: 'Geist Mono', monospace; font-size: 10.5px; letter-spacing: .22em; text-transform: uppercase; color: #56565d;">Atividades nas pausas</span>
+      <span style="font-family: 'Geist Mono', monospace; font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: #45454b;">opcional</span>
+    </div>
+    <div style="max-height: 214px; overflow-y: auto; padding: 0 6px 4px; display: flex; flex-direction: column; gap: 6px;">
+      <sc-for list="{{ plan }}" as="p" hint-placeholder-count="4">
+        <div style="padding: 8px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.07); background: {{ p.rowBg }}; display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: #62626a; white-space: nowrap;">Pausa {{ p.i1 }} · {{ p.rest }}</span>
+            <input type="text" value="{{ p.actName }}" onChange="{{ p.setName }}" placeholder="Atividade" style="flex: 1; min-width: 0; height: 24px; padding: 0 8px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.09); background: rgba(255,255,255,0.03); color: #ecebe6; font: 400 12px Geist, sans-serif; outline: none;" style-focus="border-color: rgba(255,255,255,0.26);" />
+          </div>
+          <input type="text" value="{{ p.actUrl }}" onChange="{{ p.setUrl }}" placeholder="https://…" style="width: 100%; box-sizing: border-box; height: 24px; padding: 0 8px; border-radius: 7px; border: 1px solid {{ p.urlBorder }}; background: rgba(255,255,255,0.03); color: #c9c8c3; font: 400 11.5px 'Geist Mono', monospace; outline: none;" style-focus="border-color: rgba(255,255,255,0.26);" />
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="height: 1px; margin: 7px 10px; background: rgba(255,255,255,0.08);"></div>
+    <button style="width: 100%; display: flex; align-items: center; gap: 11px; padding: 9px 12px; border: none; border-radius: 9px; background: transparent; color: #eceae5; font: 400 13.5px Geist, sans-serif; text-align: left; cursor: pointer; transition: background .14s ease;" style-hover="background: rgba(255,255,255,0.07);">
+      <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><rect x="2.4" y="9" width="2.6" height="4.6" fill="currentColor"></rect><rect x="6.7" y="5.6" width="2.6" height="8" fill="currentColor"></rect><rect x="11" y="2.6" width="2.6" height="11" fill="currentColor"></rect></svg>
+      <span style="flex: 1;">Estatísticas</span>
+    </button>
+    <button style="width: 100%; display: flex; align-items: center; gap: 11px; padding: 9px 12px; border: none; border-radius: 9px; background: transparent; color: #eceae5; font: 400 13.5px Geist, sans-serif; text-align: left; cursor: pointer; transition: background .14s ease;" style-hover="background: rgba(255,255,255,0.07);">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="2.4" stroke="currentColor" stroke-width="1.4"></circle><circle cx="8" cy="8" r="5.6" stroke="currentColor" stroke-width="1.4" stroke-dasharray="2.2 2.2"></circle></svg>
+      <span style="flex: 1;">Configurações</span>
+      <span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #5c5c63;">Ctrl ,</span>
+    </button>
+    <div style="height: 1px; margin: 7px 10px; background: rgba(255,255,255,0.08);"></div>
+    <button style="width: 100%; display: flex; align-items: center; gap: 11px; padding: 9px 12px; border: none; border-radius: 9px; background: transparent; color: #a9a8a3; font: 400 13.5px Geist, sans-serif; text-align: left; cursor: pointer; transition: background .14s ease, color .14s ease;" style-hover="background: rgba(255,255,255,0.07); color: #eceae5;">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6.4 3.2H3.6v9.6h2.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path><path d="M9 8h4.2M11.2 5.9 13.4 8l-2.2 2.1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg>
+      <span style="flex: 1;">Sair</span>
+      <span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #5c5c63;">Ctrl Q</span>
+    </button>
+  </div>
+
+  <div style="position: absolute; left: {{ popupX }}; top: {{ popupY }}; z-index: 7; box-sizing: border-box; width: 262px; padding: 15px 17px 14px; border-radius: 20px; background: #000000; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 26px 64px rgba(0,0,0,0.75); visibility: {{ popupVis }}; opacity: {{ popupOpacity }}; transform: {{ popupTransform }}; pointer-events: {{ popupPointer }}; transition: opacity .18s ease, transform {{ popupTransition }};">
+    <div onMouseDown="{{ dragStart }}" style="display: flex; align-items: center; justify-content: space-between; margin: -15px -17px 6px; padding: 13px 17px 7px; cursor: {{ dragCursor }};">
+      <span style="display: flex; align-items: center; gap: 8px; font-family: 'Geist Mono', monospace; font-size: 10.5px; letter-spacing: .22em; text-transform: uppercase; color: #6e6e75; white-space: nowrap;">
+        <svg width="9" height="12" viewBox="0 0 9 12" aria-hidden="true" style="opacity: .55;"><circle cx="2" cy="2" r="1" fill="currentColor"></circle><circle cx="7" cy="2" r="1" fill="currentColor"></circle><circle cx="2" cy="6" r="1" fill="currentColor"></circle><circle cx="7" cy="6" r="1" fill="currentColor"></circle><circle cx="2" cy="10" r="1" fill="currentColor"></circle><circle cx="7" cy="10" r="1" fill="currentColor"></circle></svg>
+        {{ modeLabel }} · {{ cycleLabel }}
+      </span>
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <button onClick="{{ minimize }}" title="Minimizar" style="width: 20px; height: 20px; display: grid; place-items: center; border-radius: 50%; border: none; background: rgba(255,255,255,0.08); color: #9a9a9f; cursor: pointer;" style-hover="background: rgba(255,255,255,0.16); color: #fff;">
+          <svg width="9" height="9" viewBox="0 0 10 10" aria-hidden="true"><rect x="1" y="4.4" width="8" height="1.3" rx=".65" fill="currentColor"></rect></svg>
+        </button>
+        <button onClick="{{ togglePopup }}" title="Fechar" style="width: 20px; height: 20px; display: grid; place-items: center; border-radius: 50%; border: none; background: rgba(255,255,255,0.08); color: #9a9a9f; font-size: 11px; line-height: 1; cursor: pointer;" style-hover="background: rgba(255,255,255,0.16); color: #fff;">×</button>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 14px;">
+      <span style="font-family: Geist, sans-serif; font-weight: 300; font-size: 44px; line-height: 1; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; color: #ffffff;">{{ clock }}</span>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button onClick="{{ reset }}" style="width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; border: 1px solid rgba(255,255,255,0.14); background: transparent; color: #b9b8b2; cursor: pointer; transition: background .15s ease;" style-hover="background: rgba(255,255,255,0.09);">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8a5 5 0 1 0 1.9-3.9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path><path d="M2.7 2.8v2.8h2.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </button>
+        <button onClick="{{ toggleRun }}" style="width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; border: none; background: {{ accent }}; color: #100b05; cursor: pointer; transition: filter .15s ease;" style-hover="filter: brightness(1.08);">
+          {{ popupIcon }}
+        </button>
+      </div>
+    </div>
+    <div style="margin-top: 14px; height: 3px; border-radius: 999px; background: rgba(255,255,255,0.1); overflow: hidden;">
+      <div style="height: 100%; width: {{ progressPct }}; background: {{ accent }}; transition: width .2s linear;"></div>
+    </div>
+  </div>
+
+  <div style="position: absolute; inset: 0; z-index: 30; background: #000; opacity: {{ takeoverOpacity }}; pointer-events: none; display: grid; place-items: center; transition: opacity .35s ease;">
+    <span style="font-family: 'Geist Mono', monospace; font-size: 11.5px; letter-spacing: .28em; text-transform: uppercase; color: #8d8c92;">trazendo a janela para frente…</span>
+  </div>
+
+  <div onMouseDown="{{ dragStart }}" onClick="{{ restore }}" title="Abrir widget" style="position: absolute; left: {{ popupX }}; top: {{ popupY }}; z-index: 7; box-sizing: border-box; display: flex; align-items: center; gap: 10px; padding: 9px 14px 9px 11px; border-radius: 999px; background: #000000; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 14px 34px rgba(0,0,0,0.6); cursor: pointer; visibility: {{ miniVis }}; opacity: {{ miniOpacity }}; transform: {{ miniTransform }}; pointer-events: {{ miniPointer }}; transition: opacity .18s ease, transform {{ popupTransition }};" style-hover="border-color: rgba(255,255,255,0.24);">
+    <span style="width: 7px; height: 7px; border-radius: 50%; background: {{ accent }}; animation: breathe 3.4s ease-in-out infinite;"></span>
+    <span style="font-family: Geist, sans-serif; font-weight: 400; font-size: 17px; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; color: #f6f5f1;">{{ clock }}</span>
+    <span style="width: 26px; height: 3px; border-radius: 999px; background: rgba(255,255,255,0.14); overflow: hidden;">
+      <span style="display: block; height: 100%; width: {{ progressPct }}; background: {{ accent }};"></span>
+    </span>
+  </div>
+
+  <sc-if value="{{ locked }}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 24; background: #000; display: grid; grid-template-rows: auto 1fr auto;">
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px 22px; font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: #77767c;">
+        <span style="display: flex; align-items: center; gap: 10px;">
+          <span style="width: 7px; height: 7px; border-radius: 50%; background: {{ accent }};"></span>
+          Pausa · {{ activityName }}
+        </span>
+        <span style="color: #c9c8c3; letter-spacing: .12em;">restam {{ clock }}</span>
+      </div>
+      <div style="position: relative; margin: 0 22px; border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.09); background: #050506;">
+        <iframe src="{{ activityUrl }}" title="Atividade da pausa" allow="autoplay; encrypted-media; fullscreen" style="width: 100%; height: 100%; border: 0; display: block; background: #050506;"></iframe>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 14px; padding: 16px 22px 20px;">
+        <div style="flex: 1; max-width: 520px; height: 3px; border-radius: 999px; background: rgba(255,255,255,0.12); overflow: hidden;">
+          <div style="height: 100%; width: {{ progressPct }}; background: {{ accent }}; transition: width .2s linear;"></div>
+        </div>
+      </div>
+
+      <div onMouseEnter="{{ showUrgency }}" onMouseLeave="{{ hideUrgency }}" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 260px; height: 74px; z-index: 26; display: flex; align-items: flex-start; justify-content: center; padding-top: 8px;">
+        <button onClick="{{ askUrgency }}" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.16); background: rgba(20,20,22,0.92); color: #e7e6e1; font: 500 11.5px 'Geist Mono', monospace; letter-spacing: .18em; text-transform: uppercase; cursor: pointer; opacity: {{ urgencyOpacity }}; pointer-events: {{ urgencyPointer }}; transform: {{ urgencyTransform }}; transition: opacity .18s ease, transform .2s cubic-bezier(.2,.8,.2,1);" style-hover="border-color: rgba(255,255,255,0.32);">Urgência</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ confirmOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 28; background: rgba(3,3,4,0.78); backdrop-filter: blur(3px); display: grid; place-items: center;">
+      <div style="width: 356px; padding: 22px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); background: #0d0d10; box-shadow: 0 30px 70px rgba(0,0,0,0.75);">
+        <div style="font: 500 15px Geist, sans-serif; color: #f4f3ef; margin-bottom: 8px;">Interromper a pausa?</div>
+        <div style="font: 400 13px Geist, sans-serif; line-height: 1.5; color: #8d8c92; margin-bottom: 18px;">A atividade será encerrada e o modo de bloqueio desativado. O temporizador da pausa continua correndo.</div>
+        <div style="display: flex; gap: 8px; justify-content: flex-end;">
+          <button onClick="{{ cancelUrgency }}" style="padding: 9px 14px; border-radius: 9px; border: 1px solid rgba(255,255,255,0.12); background: transparent; color: #cfcec9; font: 400 12.5px Geist, sans-serif; cursor: pointer;" style-hover="background: rgba(255,255,255,0.07);">Continuar na pausa</button>
+          <button onClick="{{ confirmUrgency }}" style="padding: 9px 14px; border-radius: 9px; border: none; background: {{ accent }}; color: #100b05; font: 500 12.5px Geist, sans-serif; cursor: pointer;" style-hover="filter: brightness(1.08);">Confirmar urgência</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;focusAccent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;oklch(0.79 0.135 62)&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;oklch(0.79 0.135 62)&quot;,&quot;oklch(0.80 0.10 145)&quot;,&quot;oklch(0.78 0.13 25)&quot;,&quot;oklch(0.80 0.09 250)&quot;],&quot;section&quot;:&quot;Aparência&quot;},&quot;breakAccent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;oklch(0.80 0.09 178)&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;oklch(0.80 0.09 178)&quot;,&quot;oklch(0.80 0.10 145)&quot;,&quot;oklch(0.82 0.07 250)&quot;],&quot;section&quot;:&quot;Aparência&quot;},&quot;showTicks&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Aparência&quot;}}">
+class Component extends DCLogic {
+  static KEY = 'pomodoro.cfg.v1';
+
+  state = (() => {
+    const base = {
+      focusMin: 25, breakMin: 5, cycleLen: 4, durMode: 'global',
+      plan: [
+        { f: 25, b: 5, a: { n: 'Música', u: 'https://music.youtube.com' } },
+        { f: 25, b: 5, a: { n: '', u: '' } },
+        { f: 25, b: 10, a: { n: '', u: '' } },
+        { f: 25, b: 20, a: { n: '', u: '' } }
+      ],
+      mode: 'focus', remaining: 25 * 60, running: false, done: false,
+      session: 1, completedToday: 4, autoStart: true,
+      menuOpen: false, popupOpen: true, countText: '4',
+      popupPos: null, dragging: false, popupMin: false,
+      locked: false, confirmOpen: false, urgencyHover: false, takeover: false
+    };
+    try {
+      const saved = JSON.parse(localStorage.getItem(Component.KEY) || 'null');
+      if (saved) {
+        Object.assign(base, saved);
+        base.countText = String(base.cycleLen);
+        base.remaining = (base.durMode === 'global'
+          ? base.focusMin
+          : (base.plan[base.session - 1] || { f: base.focusMin }).f) * 60;
+      }
+    } catch (e) {}
+    return base;
+  })();
+
+  persist() {
+    const s = this.state;
+    try {
+      localStorage.setItem(Component.KEY, JSON.stringify({
+        focusMin: s.focusMin, breakMin: s.breakMin, cycleLen: s.cycleLen,
+        durMode: s.durMode, plan: s.plan, autoStart: s.autoStart, session: s.session
+      }));
+    } catch (e) {}
+  }
+  componentDidUpdate() { this.persist(); }
+
+  resizePlan(n, s) {
+    const plan = s.plan.slice(0, n);
+    while (plan.length < n) plan.push({ f: s.focusMin, b: s.breakMin, a: { n: '', u: '' } });
+    return plan;
+  }
+  setCount = n => this.setState(s => {
+    const c = Math.min(24, Math.max(1, n | 0));
+    const plan = this.resizePlan(c, s);
+    const session = Math.min(s.session, c);
+    const cur = s.durMode === 'global' ? (s.mode === 'focus' ? s.focusMin : s.breakMin)
+      : (s.mode === 'focus' ? plan[session - 1].f : plan[session - 1].b);
+    return { cycleLen: c, plan, session, countText: String(c), remaining: s.running ? s.remaining : cur * 60 };
+  });
+
+  componentDidMount() {
+    this._t = setInterval(() => {
+      if (!this.state.running) return;
+      if (this.state.remaining - 0.1 <= 0) { this.advance(true); return; }
+      this.setState(s => ({ remaining: Math.max(0, s.remaining - 0.1) }));
+    }, 100);
+    this._k = e => {
+      if (this.state.locked) return;
+      if (e.code === 'Space') { e.preventDefault(); this.toggleRun(); }
+      else if (e.key === 'r' || e.key === 'R') this.reset();
+      else if (e.key === 's' || e.key === 'S') this.skip();
+      else if (e.key === 'm' || e.key === 'M') this.setState(s => ({ menuOpen: !s.menuOpen }));
+      else if (e.key === 'Escape') this.setState({ menuOpen: false });
+    };
+    document.addEventListener('keydown', this._k);
+
+    this._move = e => {
+      if (!this._drag) return;
+      const w = this._drag.w || 262, h = this._drag.h || 150;
+      if (!this._drag.moved &&
+        Math.abs(e.clientX - this._drag.sx) < 5 && Math.abs(e.clientY - this._drag.sy) < 5) return;
+      this._drag.moved = true;
+      this._movedAt = Date.now();
+      const x = Math.min(window.innerWidth - w - 8, Math.max(8, e.clientX - this._drag.dx));
+      const y = Math.min(window.innerHeight - h - 8, Math.max(8, e.clientY - this._drag.dy));
+      this.setState({ popupPos: { x, y } });
+    };
+    this._up = () => { if (this._drag) { this._drag = null; this.setState({ dragging: false }); } };
+    document.addEventListener('mousemove', this._move);
+    document.addEventListener('mouseup', this._up);
+  }
+  componentWillUnmount() {
+    clearInterval(this._t);
+    document.removeEventListener('keydown', this._k);
+    document.removeEventListener('mousemove', this._move);
+    document.removeEventListener('mouseup', this._up);
+  }
+  dragStart = e => {
+    if (e.button !== 0) return;
+    const card = this.state.popupMin ? e.currentTarget : e.currentTarget.parentElement;
+    const r = card.getBoundingClientRect();
+    this._drag = { dx: e.clientX - r.left, dy: e.clientY - r.top, w: r.width, h: r.height, sx: e.clientX, sy: e.clientY };
+    this._movedAt = 0;
+    this.setState({ popupPos: { x: r.left, y: r.top }, dragging: true });
+    e.preventDefault();
+  };
+
+  minsFor(s, mode, session) {
+    if (s.durMode === 'global') return mode === 'focus' ? s.focusMin : s.breakMin;
+    const p = s.plan[Math.min(session, s.plan.length) - 1] || { f: s.focusMin, b: s.breakMin };
+    return mode === 'focus' ? p.f : p.b;
+  }
+  total() { return this.minsFor(this.state, this.state.mode, this.state.session) * 60; }
+  toggleRun = () => this.setState(s => (s.done ? { running: false } : { running: !s.running, menuOpen: false }));
+  reset = () => this.setState({ remaining: this.total(), running: false, done: false, menuOpen: false, locked: false, confirmOpen: false });
+  activityFor(s, session) {
+    const p = s.plan[session - 1];
+    const a = (p && p.a) || { n: '', u: '' };
+    return { name: (a.n || '').trim(), url: (a.u || '').trim() };
+  }
+  advance = auto => {
+    const s = this.state;
+    const mode = s.mode === 'focus' ? 'break' : 'focus';
+    const session = mode === 'focus' ? (s.session % s.cycleLen) + 1 : s.session;
+    const act = this.activityFor(s, s.session);
+    const entering = mode === 'break';
+    const lock = entering && !!act.url;
+    this.setState({
+      mode, session, remaining: this.minsFor(s, mode, session) * 60,
+      done: false, running: entering ? true : s.autoStart, menuOpen: false,
+      completedToday: s.mode === 'focus' ? s.completedToday + 1 : s.completedToday,
+      locked: lock, confirmOpen: false, urgencyHover: false,
+      takeover: entering && auto
+    });
+    if (entering && auto) {
+      clearTimeout(this._to);
+      this._to = setTimeout(() => this.setState({ takeover: false }), 850);
+    }
+  };
+  skip = () => this.advance(false);
+  bump(key, delta, lo, hi) {
+    this.setState(s => {
+      const v = Math.min(hi, Math.max(lo, s[key] + delta));
+      const next = Object.assign({}, s, { [key]: v });
+      const active = s.durMode === 'global' &&
+        ((key === 'focusMin' && s.mode === 'focus') || (key === 'breakMin' && s.mode === 'break'));
+      return active ? { [key]: v, remaining: v * 60, done: false } : { [key]: v };
+    });
+  }
+  bumpPlan(i, field, delta) {
+    this.setState(s => {
+      const lo = field === 'f' ? 5 : 1, hi = field === 'f' ? 180 : 60, step = field === 'f' ? 5 : 1;
+      const plan = s.plan.map((p, k) => k === i ? Object.assign({}, p, {
+        [field]: Math.min(hi, Math.max(lo, p[field] + delta * step))
+      }) : p);
+      const active = s.durMode === 'individual' && i === s.session - 1 &&
+        ((field === 'f' && s.mode === 'focus') || (field === 'b' && s.mode === 'break'));
+      return active
+        ? { plan, remaining: plan[i][field] * 60, done: false }
+        : { plan };
+    });
+  }
+  setAct = (i, field, value) => this.setState(s => ({
+    plan: s.plan.map((p, k) => k === i
+      ? Object.assign({}, p, { a: Object.assign({ n: '', u: '' }, p.a, { [field]: value }) })
+      : p)
+  }));
+  setDurMode = m => this.setState(s => {
+    const plan = s.plan.length === s.cycleLen ? s.plan : this.resizePlan(s.cycleLen, s);
+    const next = Object.assign({}, s, { durMode: m, plan });
+    return { durMode: m, plan, remaining: s.running ? s.remaining : this.minsFor(next, s.mode, s.session) * 60, done: false };
+  });
+
+  renderVals() {
+    const s = this.state;
+    const accent = s.mode === 'focus'
+      ? (this.props.focusAccent ?? 'oklch(0.79 0.135 62)')
+      : (this.props.breakAccent ?? 'oklch(0.80 0.09 178)');
+    const total = this.total();
+    const elapsed = total - s.remaining;
+    const p = Math.min(1, Math.max(0, elapsed / total));
+    const r = 226, circ = 2 * Math.PI * r;
+
+    const showTicks = this.props.showTicks ?? true;
+    const ticks = [];
+    if (showTicks) {
+      for (let i = 0; i < 60; i++) {
+        const a = (i * 6 - 90) * Math.PI / 180;
+        const major = i % 5 === 0;
+        const inner = major ? 190 : 200, outer = 212;
+        const passed = i / 60 <= p;
+        ticks.push({
+          x1: 240 + Math.cos(a) * inner, y1: 240 + Math.sin(a) * inner,
+          x2: 240 + Math.cos(a) * outer, y2: 240 + Math.sin(a) * outer,
+          w: major ? 2 : 1,
+          color: passed ? accent : (major ? 'rgba(255,255,255,0.30)' : 'rgba(255,255,255,0.13)')
+        });
+      }
+    }
+
+    const mm = String(Math.floor(s.remaining / 60)).padStart(2, '0');
+    const ss = String(Math.floor(s.remaining % 60)).padStart(2, '0');
+    const end = new Date(Date.now() + s.remaining * 1000);
+    const stateLabel = s.done ? 'concluído' : s.running ? (s.mode === 'focus' ? 'em foco' : 'em pausa') : (elapsed > 0 ? 'pausado' : 'pronto');
+
+    const dots = [];
+    for (let i = 1; i <= s.cycleLen; i++) {
+      const active = i === s.session;
+      dots.push({
+        size: active ? '22px' : '6px',
+        color: active ? accent : (i < s.session ? 'rgba(255,255,255,0.32)' : 'rgba(255,255,255,0.12)')
+      });
+    }
+
+    const pauseIcon = React.createElement('svg', { width: 22, height: 22, viewBox: '0 0 24 24' },
+      React.createElement('rect', { x: 7, y: 5, width: 3.4, height: 14, rx: 1.2, fill: 'currentColor' }),
+      React.createElement('rect', { x: 13.6, y: 5, width: 3.4, height: 14, rx: 1.2, fill: 'currentColor' }));
+    const playIcon = React.createElement('svg', { width: 22, height: 22, viewBox: '0 0 24 24' },
+      React.createElement('path', { d: 'M8 5.2 18.4 12 8 18.8z', fill: 'currentColor' }));
+    const smallPause = React.createElement('svg', { width: 14, height: 14, viewBox: '0 0 24 24' },
+      React.createElement('rect', { x: 7, y: 5, width: 3.4, height: 14, rx: 1.2, fill: 'currentColor' }),
+      React.createElement('rect', { x: 13.6, y: 5, width: 3.4, height: 14, rx: 1.2, fill: 'currentColor' }));
+    const smallPlay = React.createElement('svg', { width: 14, height: 14, viewBox: '0 0 24 24' },
+      React.createElement('path', { d: 'M8 5.2 18.4 12 8 18.8z', fill: 'currentColor' }));
+
+    return {
+      accent, ticks, circumference: circ, dashOffset: circ * (1 - p),
+      clock: mm + ':' + ss,
+      progressPct: (p * 100).toFixed(1) + '%',
+      endsAt: end.getHours().toString().padStart(2, '0') + ':' + end.getMinutes().toString().padStart(2, '0'),
+      modeLabel: s.mode === 'focus' ? 'Foco' : 'Pausa',
+      sessionLabel: 'Sessão ' + s.session + ' de ' + s.cycleLen,
+      cycleLabel: s.session + '/' + s.cycleLen,
+      stateLabel,
+      focusMin: s.focusMin, breakMin: s.breakMin,
+      doneToday: s.completedToday,
+      focusToday: Math.floor(s.completedToday * s.focusMin / 60) + 'h ' + (s.completedToday * s.focusMin) % 60 + 'm',
+      cycleDots: dots,
+      primaryIcon: s.running ? pauseIcon : playIcon,
+      popupIcon: s.running ? smallPause : smallPlay,
+      runItemLabel: s.running ? 'Pausar sessão' : 'Iniciar sessão',
+      menuOpacity: s.menuOpen ? 1 : 0,
+      menuTransform: s.menuOpen ? 'translateY(0) scale(1)' : 'translateY(-8px) scale(.97)',
+      menuPointer: s.menuOpen ? 'auto' : 'none',
+      scrimOpacity: s.menuOpen ? 1 : 0,
+      minimize: () => this.setState({ popupMin: true }),
+      restore: () => {
+        const dragged = (this._drag && this._drag.moved) || (Date.now() - (this._movedAt || 0) < 250);
+        if (!dragged) this.setState({ popupMin: false });
+      },
+      miniOpacity: (s.popupOpen && s.popupMin) ? '1' : '0',
+      miniVis: (s.popupOpen && s.popupMin) ? 'visible' : 'hidden',
+      popupVis: (s.popupOpen && !s.popupMin) ? 'visible' : 'hidden',
+      miniTransform: (s.popupOpen && s.popupMin) ? 'scale(1)' : 'scale(.9)',
+      miniPointer: (s.popupOpen && s.popupMin) ? 'auto' : 'none',
+      popupOpacity: (s.popupOpen && !s.popupMin) ? '1' : '0',
+      popupTransform: (s.popupOpen && !s.popupMin) ? 'translateY(0) scale(1)' : 'translateY(12px) scale(.98)',
+      popupPointer: (s.popupOpen && !s.popupMin) ? 'auto' : 'none',
+      popupX: s.popupPos ? s.popupPos.x + 'px' : 'calc(100% - 288px)',
+      popupY: s.popupPos ? s.popupPos.y + 'px' : 'calc(100% - 234px)',
+      popupTransition: s.dragging ? '0s' : '.2s cubic-bezier(.2,.8,.2,1)',
+      dragCursor: s.dragging ? 'grabbing' : 'grab',
+      dragStart: this.dragStart,
+      autoTrack: s.autoStart ? accent : 'rgba(255,255,255,0.16)',
+      autoKnob: s.autoStart ? 'translateX(13px)' : 'translateX(0)',
+      toggleRun: this.toggleRun, reset: this.reset, skip: this.skip,
+      toggleMenu: () => this.setState(x => ({ menuOpen: !x.menuOpen })),
+      closeMenu: () => this.setState({ menuOpen: false }),
+      togglePopup: () => this.setState(x => ({ popupOpen: !x.popupOpen, popupMin: x.popupOpen ? x.popupMin : false })),
+      toggleAuto: () => this.setState(x => ({ autoStart: !x.autoStart })),
+      focusUp: () => this.bump('focusMin', 5, 5, 180),
+      focusDown: () => this.bump('focusMin', -5, 5, 180),
+      breakUp: () => this.bump('breakMin', 1, 1, 60),
+      breakDown: () => this.bump('breakMin', -1, 1, 60),
+      isGlobal: s.durMode === 'global',
+      isIndividual: s.durMode === 'individual',
+      durModeLabel: s.durMode === 'global' ? 'global' : 'individual',
+      globalBg: s.durMode === 'global' ? 'rgba(255,255,255,0.12)' : 'transparent',
+      globalFg: s.durMode === 'global' ? '#f6f5f1' : '#77767c',
+      indivBg: s.durMode === 'individual' ? 'rgba(255,255,255,0.12)' : 'transparent',
+      indivFg: s.durMode === 'individual' ? '#f6f5f1' : '#77767c',
+      countText: s.countText,
+      countUp: () => this.setCount(s.cycleLen + 1),
+      countDown: () => this.setCount(s.cycleLen - 1),
+      countInput: e => {
+        const t = e.target.value.replace(/[^0-9]/g, '').slice(0, 2);
+        this.setState({ countText: t });
+      },
+      countCommit: e => {
+        const n = parseInt(e.target.value, 10);
+        this.setCount(isNaN(n) ? s.cycleLen : n);
+      },
+      setGlobal: () => this.setDurMode('global'),
+      setIndividual: () => this.setDurMode('individual'),
+      curFocus: this.minsFor(s, 'focus', s.session),
+      curBreak: this.minsFor(s, 'break', s.session),
+      planTotal: (() => {
+        const mins = s.durMode === 'global'
+          ? s.cycleLen * (s.focusMin + s.breakMin)
+          : s.plan.reduce((a, p) => a + p.f + p.b, 0);
+        return Math.floor(mins / 60) + 'h ' + (mins % 60) + 'm';
+      })(),
+      locked: s.locked,
+      confirmOpen: s.confirmOpen,
+      activityName: (() => {
+        const a = this.activityFor(s, s.session);
+        if (a.name) return a.name;
+        try { return new URL(a.url).hostname.replace(/^www\./, ''); } catch (e) { return 'atividade'; }
+      })(),
+      urgencyPointer: s.urgencyHover ? 'auto' : 'none',
+      activityUrl: this.activityFor(s, s.session).url,
+      takeoverOpacity: s.takeover ? 1 : 0,
+      urgencyOpacity: s.urgencyHover ? 1 : 0,
+      urgencyTransform: s.urgencyHover ? 'translateY(0)' : 'translateY(-10px)',
+      showUrgency: () => this.setState({ urgencyHover: true }),
+      hideUrgency: () => this.setState({ urgencyHover: false }),
+      askUrgency: () => this.setState({ confirmOpen: true }),
+      cancelUrgency: () => this.setState({ confirmOpen: false, urgencyHover: false }),
+      confirmUrgency: () => this.setState({ confirmOpen: false, locked: false, urgencyHover: false }),
+      plan: s.plan.map((p, i) => ({
+        n: 'Sessão ' + (i + 1),
+        i1: i + 1,
+        focus: p.f + 'm',
+        rest: p.b + 'm',
+        actName: ((p.a || {}).n) || '',
+        actUrl: ((p.a || {}).u) || '',
+        urlBorder: ((p.a || {}).u || '').trim() ? accent : 'rgba(255,255,255,0.09)',
+        setName: e => this.setAct(i, 'n', e.target.value),
+        setUrl: e => this.setAct(i, 'u', e.target.value),
+        dot: i + 1 === s.session ? accent : 'rgba(255,255,255,0.18)',
+        rowBg: i + 1 === s.session ? 'rgba(255,255,255,0.05)' : 'transparent',
+        fUp: () => this.bumpPlan(i, 'f', 1),
+        fDown: () => this.bumpPlan(i, 'f', -1),
+        bUp: () => this.bumpPlan(i, 'b', 1),
+        bDown: () => this.bumpPlan(i, 'b', -1)
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>

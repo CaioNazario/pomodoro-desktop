@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-reiniciar-etapa"
+description = "Enables the reiniciar_etapa command without any pre-configured scope."
+commands.allow = ["reiniciar_etapa"]
+
+[[permission]]
+identifier = "deny-reiniciar-etapa"
+description = "Denies the reiniciar_etapa command without any pre-configured scope."
+commands.deny = ["reiniciar_etapa"]

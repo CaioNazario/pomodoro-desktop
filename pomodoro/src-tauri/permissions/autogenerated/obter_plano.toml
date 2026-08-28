@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-obter-plano"
+description = "Enables the obter_plano command without any pre-configured scope."
+commands.allow = ["obter_plano"]
+
+[[permission]]
+identifier = "deny-obter-plano"
+description = "Denies the obter_plano command without any pre-configured scope."
+commands.deny = ["obter_plano"]

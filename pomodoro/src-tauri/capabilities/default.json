@@ -1,0 +1,26 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Capability for the main window's own webview",
+  "webviews": ["main"],
+  "permissions": [
+    "core:event:default",
+    "allow-obter-estado",
+    "allow-alternar-execucao",
+    "allow-reiniciar-etapa",
+    "allow-pular-etapa",
+    "allow-alterar-iniciar-automaticamente",
+    "allow-obter-plano",
+    "allow-redimensionar",
+    "allow-trocar-modo",
+    "allow-alterar-duracao-global-foco",
+    "allow-alterar-duracao-global-pausa",
+    "allow-alterar-duracao-individual-foco",
+    "allow-alterar-duracao-individual-pausa",
+    "allow-alterar-atividade-global",
+    "allow-alterar-atividade-individual",
+    "allow-obter-contadores-do-dia",
+    "allow-alternar-widget",
+    "process:allow-exit"
+  ]
+}

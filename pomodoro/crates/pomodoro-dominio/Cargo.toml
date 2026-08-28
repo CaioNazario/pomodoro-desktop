@@ -1,0 +1,8 @@
+[package]
+name = "pomodoro-dominio"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+thiserror.workspace = true
+url.workspace = true

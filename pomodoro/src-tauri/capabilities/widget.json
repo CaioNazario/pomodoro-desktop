@@ -1,0 +1,14 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "widget",
+  "description": "Capability for the widget window's own webview: le/altera o timer, arrasta a propria janela, fecha a propria janela pelo X.",
+  "webviews": ["widget"],
+  "permissions": [
+    "core:event:default",
+    "allow-obter-estado",
+    "allow-alternar-execucao",
+    "allow-reiniciar-etapa",
+    "core:window:allow-start-dragging",
+    "core:window:allow-close"
+  ]
+}

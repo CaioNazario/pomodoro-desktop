@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-confirmar-urgencia"
+description = "Enables the confirmar_urgencia command without any pre-configured scope."
+commands.allow = ["confirmar_urgencia"]
+
+[[permission]]
+identifier = "deny-confirmar-urgencia"
+description = "Denies the confirmar_urgencia command without any pre-configured scope."
+commands.deny = ["confirmar_urgencia"]

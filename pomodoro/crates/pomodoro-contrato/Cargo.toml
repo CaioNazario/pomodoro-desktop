@@ -1,0 +1,11 @@
+[package]
+name = "pomodoro-contrato"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+thiserror.workspace = true
+serde.workspace = true
+specta = { version = "=2.0.0-rc.25", features = ["derive"] }
+specta-typescript = "0.0.12"
+pomodoro-dominio = { path = "../pomodoro-dominio" }

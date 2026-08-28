@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-obter-contadores-do-dia"
+description = "Enables the obter_contadores_do_dia command without any pre-configured scope."
+commands.allow = ["obter_contadores_do_dia"]
+
+[[permission]]
+identifier = "deny-obter-contadores-do-dia"
+description = "Denies the obter_contadores_do_dia command without any pre-configured scope."
+commands.deny = ["obter_contadores_do_dia"]

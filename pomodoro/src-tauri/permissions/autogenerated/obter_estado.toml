@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-obter-estado"
+description = "Enables the obter_estado command without any pre-configured scope."
+commands.allow = ["obter_estado"]
+
+[[permission]]
+identifier = "deny-obter-estado"
+description = "Denies the obter_estado command without any pre-configured scope."
+commands.deny = ["obter_estado"]

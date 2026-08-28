@@ -1,0 +1,4 @@
+disallowed-methods = [
+  { path = "std::time::SystemTime::now", reason = "o dominio nao conhece o relogio do SO; injete `Relogio` ou receba `agora` por parametro" },
+  { path = "std::time::Instant::now",    reason = "o dominio nao conhece o relogio do SO; injete `Relogio` ou receba `agora` por parametro" },
+]

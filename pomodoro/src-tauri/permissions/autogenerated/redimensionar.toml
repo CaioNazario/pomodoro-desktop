@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-redimensionar"
+description = "Enables the redimensionar command without any pre-configured scope."
+commands.allow = ["redimensionar"]
+
+[[permission]]
+identifier = "deny-redimensionar"
+description = "Denies the redimensionar command without any pre-configured scope."
+commands.deny = ["redimensionar"]

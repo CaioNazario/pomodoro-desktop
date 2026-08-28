@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "bloqueio",
+  "description": "Capability for the lock windows' own webview — only the Urgencia exit, nothing else. Never matches the isolated 'atividade' child webview.",
+  "webviews": ["bloqueio-*"],
+  "permissions": ["allow-confirmar-urgencia"]
+}

@@ -1,0 +1,40 @@
+name: Front CI
+
+on:
+  push:
+    paths:
+      - "pomodoro/src/**"
+      - "pomodoro/index.html"
+      - "pomodoro/package.json"
+      - "pomodoro/pnpm-lock.yaml"
+      - "pomodoro/tsconfig*.json"
+      - "pomodoro/vite.config.ts"
+      - ".github/workflows/front-ci.yml"
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: pomodoro
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pomodoro/pnpm-lock.yaml
+
+      - name: Instala dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Tipos
+        run: pnpm exec tsc --noEmit
+
+      - name: Build
+        run: pnpm build

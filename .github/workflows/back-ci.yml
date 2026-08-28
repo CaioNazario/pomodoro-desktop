@@ -1,0 +1,66 @@
+name: Back CI
+
+on:
+  push:
+    paths:
+      - "pomodoro/crates/**"
+      - "pomodoro/src-tauri/**"
+      - "pomodoro/Cargo.toml"
+      - "pomodoro/Cargo.lock"
+      - ".github/workflows/back-ci.yml"
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: pomodoro
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instala dependencias de sistema do Tauri
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libjavascriptcoregtk-4.1-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            libssl-dev \
+            libxdo-dev \
+            patchelf \
+            build-essential
+
+      - name: Instala toolchain Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: pomodoro -> target
+
+      - name: Formatacao
+        run: cargo fmt --all --check
+
+      - name: Clippy (warnings sao erro)
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+      - name: Testes
+        run: cargo test --workspace
+
+      - name: Nenhum unsafe em codigo nosso
+        run: |
+          if grep -rn --include='*.rs' -E '(^|[^_[:alnum:]])unsafe([^_[:alnum:]]|$)' crates/ src-tauri/src/; then
+            echo "ERRO: 'unsafe' encontrado. Este projeto nao tem excecao." >&2
+            exit 1
+          fi
+
+      - name: Contrato Rust<->TS em dia (checagem de superficie)
+        run: |
+          if [ -f src/bindings.ts ]; then
+            git diff --exit-code -- src/bindings.ts \
+              || { echo "ERRO: bindings.ts fora de sincronia. Rode a geracao localmente e commite." >&2; exit 1; }
+          else
+            echo "(bindings.ts ainda nao existe)"
+          fi

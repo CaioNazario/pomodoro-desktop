@@ -1,0 +1,11 @@
+[package]
+name = "pomodoro-config"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+thiserror.workspace = true
+serde.workspace = true
+toml = "0.9"
+tempfile = "3"
+pomodoro-dominio = { version = "0.1.0", path = "../pomodoro-dominio" }

@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-alterar-iniciar-automaticamente"
+description = "Enables the alterar_iniciar_automaticamente command without any pre-configured scope."
+commands.allow = ["alterar_iniciar_automaticamente"]
+
+[[permission]]
+identifier = "deny-alterar-iniciar-automaticamente"
+description = "Denies the alterar_iniciar_automaticamente command without any pre-configured scope."
+commands.deny = ["alterar_iniciar_automaticamente"]

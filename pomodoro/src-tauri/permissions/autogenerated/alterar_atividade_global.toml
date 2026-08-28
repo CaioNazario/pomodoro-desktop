@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-alterar-atividade-global"
+description = "Enables the alterar_atividade_global command without any pre-configured scope."
+commands.allow = ["alterar_atividade_global"]
+
+[[permission]]
+identifier = "deny-alterar-atividade-global"
+description = "Denies the alterar_atividade_global command without any pre-configured scope."
+commands.deny = ["alterar_atividade_global"]

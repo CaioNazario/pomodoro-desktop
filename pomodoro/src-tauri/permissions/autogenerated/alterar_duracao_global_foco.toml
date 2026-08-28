@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-alterar-duracao-global-foco"
+description = "Enables the alterar_duracao_global_foco command without any pre-configured scope."
+commands.allow = ["alterar_duracao_global_foco"]
+
+[[permission]]
+identifier = "deny-alterar-duracao-global-foco"
+description = "Denies the alterar_duracao_global_foco command without any pre-configured scope."
+commands.deny = ["alterar_duracao_global_foco"]
