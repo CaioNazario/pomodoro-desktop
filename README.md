@@ -1,11 +1,11 @@
 # Pomodoro com descanso ativo
 
-Um Pomodoro para Linux/GNOME em que a **pausa não é tempo morto**. Cada pausa
-carrega uma atividade (nome + URL) que o app abre sozinho, em tela cheia, com
+Um Pomodoro para Linux/GNOME em que a **pausa não é tempo morto**. Cada pausa pode
+carregar uma atividade (nome + URL) que o app abre sozinho, em tela cheia, com
 saída difícil de propósito — o descanso vira dirigido em vez de virar rolagem
 infinita. O timer nunca para durante isso.
 
-## About
+## O problema
 
 O Pomodoro clássico define os 25 minutos de foco e **abandona os 5 de pausa**.
 Na prática a pausa vira feed infinito, e voltar do feed custa mais caro que o
