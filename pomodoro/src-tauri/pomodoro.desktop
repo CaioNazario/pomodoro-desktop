@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name={{name}}
+GenericName=Timer Pomodoro
+Comment={{comment}}
+Exec={{exec}} {{exec_arg}}
+Icon={{icon}}
+Terminal=false
+Categories={{categories}}
+Keywords=pomodoro;foco;timer;cronometro;produtividade;concentracao;estudo;focus;
+StartupNotify=true
+StartupWMClass=pomodoro

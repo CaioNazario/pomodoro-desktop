@@ -1,6 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "pomodoro",
+  "productName": "Pomodoro",
+  "mainBinaryName": "pomodoro",
   "version": "0.1.0",
   "identifier": "com.caionazario.pomodoro",
   "build": {
@@ -13,7 +14,7 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "pomodoro",
+        "title": "Pomodoro",
         "width": 800,
         "height": 600
       }
@@ -24,13 +25,43 @@
   },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": [
+      "deb",
+      "rpm",
+      "appimage"
+    ],
+    "category": "Utility",
+    "shortDescription": "Timer pomodoro com tomada de foco",
+    "longDescription": "Timer pomodoro que bloqueia a tela e suprime os atalhos do compositor durante o ciclo de foco, com widget flutuante, plano de duracoes configuravel e historico de 90 dias.",
+    "copyright": "Copyright (c) 2026 Caio Nazario",
+    "publisher": "Caio Nazario",
+    "homepage": "https://github.com/CaioNazario/pomodoro-desktop",
+    "licenseFile": "../../LICENSE",
     "icon": [
       "icons/32x32.png",
+      "icons/64x64.png",
       "icons/128x128.png",
-      "icons/128x128@2x.png",
+      "icons/256x256.png",
+      "icons/512x512.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "linux": {
+      "appimage": {
+        "bundleMediaFramework": true
+      },
+      "deb": {
+        "desktopTemplate": "pomodoro.desktop",
+        "depends": [
+          "dconf-gsettings-backend"
+        ]
+      },
+      "rpm": {
+        "desktopTemplate": "pomodoro.desktop",
+        "depends": [
+          "dconf"
+        ]
+      }
+    }
   }
 }
