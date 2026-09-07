@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Instalar Pomodoro
+Comment=Instala o Pomodoro neste computador
+Exec=bash -c "a=\\"\\${1#file://}\\"; cd \\"\\$(dirname \\"\\$a\\")\\" && POMODORO_INSTALADOR_INTERATIVO=1 exec ./instalar.sh" _ %k
+Icon=system-software-install
+Terminal=true
+Categories=System;
+NoDisplay=true

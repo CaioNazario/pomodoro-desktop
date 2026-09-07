@@ -1,0 +1,36 @@
+# Base deliberadamente velha: o glibc daqui (2.35) vira o piso de
+# compatibilidade dos pacotes. Buildar no Arch (glibc 2.44) produz binario que
+# nao roda em Ubuntu 22.04 nem Debian 12.
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    APPIMAGE_EXTRACT_AND_RUN=1 \
+    CARGO_HOME=/opt/cargo \
+    RUSTUP_HOME=/opt/rustup \
+    PATH=/opt/cargo/bin:/opt/node/bin:$PATH
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      build-essential ca-certificates curl file git pkg-config xz-utils \
+      libwebkit2gtk-4.1-dev libgtk-3-dev librsvg2-dev libssl-dev \
+      libayatana-appindicator3-dev \
+      libglib2.0-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
+      gstreamer1.0-plugins-base gstreamer1.0-plugins-good \
+      gstreamer1.0-plugins-bad gstreamer1.0-libav \
+      patchelf desktop-file-utils rpm squashfs-tools zsync \
+    && rm -rf /var/lib/apt/lists/*
+
+ARG NODE_VERSAO=20.18.1
+RUN curl -fsSL "https://nodejs.org/dist/v${NODE_VERSAO}/node-v${NODE_VERSAO}-linux-x64.tar.xz" \
+      | tar -xJ -C /opt \
+    && mv "/opt/node-v${NODE_VERSAO}-linux-x64" /opt/node \
+    && npm install -g pnpm@10
+
+ARG RUST_VERSAO=1.98.0
+RUN curl -fsSL https://sh.rustup.rs \
+      | sh -s -- -y --default-toolchain "${RUST_VERSAO}" --profile minimal \
+    && chmod -R a+rwX /opt/cargo /opt/rustup
+
+COPY empacotar-no-container.sh /usr/local/bin/empacotar
+RUN chmod +x /usr/local/bin/empacotar
+
+ENTRYPOINT ["/usr/local/bin/empacotar"]

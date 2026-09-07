@@ -1,0 +1,39 @@
+Pomodoro — instalacao
+=====================
+
+Jeito mais simples
+------------------
+Abra esta pasta no gerenciador de arquivos e execute "Instalar Pomodoro".
+Se o duplo-clique nao fizer nada, clique com o botao direito e escolha
+"Executar" / "Run as a Program" / "Abrir com terminal".
+
+Pelo terminal
+-------------
+    ./instalar.sh
+
+O instalador escolhe sozinho o formato certo:
+
+    Arch, Manjaro, EndeavourOS ... pacman (PKGBUILD, a partir do .deb)
+    Debian, Ubuntu, Mint, Pop ... .deb
+    Fedora, RHEL, openSUSE ...... .rpm
+    Qualquer outra .............. AppImage instalado no seu HOME, sem root
+
+Depois de instalar, procure por "Pomodoro" na busca de aplicativos.
+
+Instalar so pro seu usuario (sem sudo, em qualquer distro)
+----------------------------------------------------------
+    chmod +x Pomodoro_*.AppImage
+    ./instalar.sh --appimage
+
+Desinstalar
+-----------
+    ./desinstalar.sh
+
+Suas configuracoes e o historico ficam em
+~/.config/com.caionazario.pomodoro e nao sao apagados.
+
+Compatibilidade
+---------------
+Os pacotes sao construidos contra glibc 2.35, o que cobre
+Ubuntu 22.04+, Debian 12+, Fedora 36+, openSUSE Leap 15.5+ e Arch.
+Arquitetura: x86_64.

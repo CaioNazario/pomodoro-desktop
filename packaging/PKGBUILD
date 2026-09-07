@@ -1,0 +1,26 @@
+# Maintainer: Caio Nazario <nazzariocaio@gmail.com>
+# Pacote binario: reaproveita o .deb portavel gerado por packaging/empacotar.sh
+# em vez de recompilar. Os caminhos do .deb ja seguem o FHS que o Arch usa.
+pkgname=pomodoro-desktop-bin
+_deb='@DEB@'
+pkgver=0.1.0
+pkgrel=1
+pkgdesc='Timer pomodoro com tomada de foco'
+arch=('x86_64')
+url='https://github.com/CaioNazario/pomodoro-desktop'
+license=('MIT')
+depends=('webkit2gtk-4.1' 'gtk3' 'glib2' 'gdk-pixbuf2' 'cairo' 'libsoup3' 'dbus' 'dconf')
+optdepends=('gst-plugins-good: reproducao de video na pausa'
+            'gst-plugins-bad: codecs adicionais de video')
+provides=('pomodoro')
+conflicts=('pomodoro')
+options=('!strip' '!debug' '!lto')
+source=("$_deb")
+sha256sums=('@SHA256@')
+noextract=("$_deb")
+
+package() {
+  local dados
+  dados=$(bsdtar -tf "$srcdir/$_deb" | grep -m1 '^data\.tar')
+  bsdtar -xOf "$srcdir/$_deb" "$dados" | bsdtar -xpf - -C "$pkgdir"
+}
