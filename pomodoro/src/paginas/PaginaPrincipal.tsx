@@ -62,7 +62,6 @@ export function PaginaPrincipal() {
 
   return (
     <div style={estilos.raiz}>
-      <div style={estilos.fundo} />
       <Cabecalho estado={estado} onAbrirMenu={menu.abrir} onAlternarWidget={() => commands.alternarWidget()} />
       <main style={estilos.main}>
         <div style={estilos.coluna}>
@@ -105,12 +104,6 @@ const estilos: Record<string, CSSProperties> = {
     display: "grid",
     gridTemplateRows: "auto 1fr auto",
     userSelect: "none",
-  },
-  fundo: {
-    position: "absolute",
-    inset: 0,
-    background: "radial-gradient(90% 70% at 50% 42%, rgba(255,255,255,0.035), rgba(0,0,0,0) 70%)",
-    pointerEvents: "none",
   },
   main: {
     position: "relative",
