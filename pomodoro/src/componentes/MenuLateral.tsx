@@ -7,6 +7,7 @@ import { estilosDoMenu } from "./menu/estilosDoMenu";
 import { SeletorDeModo } from "./menu/SeletorDeModo";
 import { SeletorDeSessoes } from "./menu/SeletorDeSessoes";
 import { ToggleAutoStart } from "./menu/ToggleAutoStart";
+import { ItemDeMenu } from "./moleculas/ItemDeMenu";
 
 interface Props {
   aberto: boolean;
@@ -53,16 +54,10 @@ export function MenuLateral({ aberto, onFechar, iniciarAutomaticamente, onAltera
             <div style={estilosDoMenu.divisor} />
           </>
         )}
-        <button style={estilos.itemInerte} tabIndex={-1} aria-disabled="true">
-          <span style={estilos.rotulo}>Estatísticas</span>
-        </button>
-        <button style={estilos.itemInerte} tabIndex={-1} aria-disabled="true">
-          <span style={estilos.rotulo}>Configurações</span>
-        </button>
+        <ItemDeMenu rotulo="Estatísticas" cor="#5f5f66" desabilitado />
+        <ItemDeMenu rotulo="Configurações" cor="#5f5f66" desabilitado />
         <div style={estilos.divisor} />
-        <button style={estilos.itemSair} onClick={aoClicarSair}>
-          <span style={estilos.rotulo}>Sair</span>
-        </button>
+        <ItemDeMenu rotulo="Sair" cor="#a9a8a3" onClick={aoClicarSair} />
       </nav>
     </>
   );
@@ -93,34 +88,5 @@ const estilos: Record<string, CSSProperties> = {
     boxShadow: "0 24px 60px rgba(0,0,0,0.7)",
     transition: "opacity .16s ease, transform .18s cubic-bezier(.2,.8,.2,1)",
   },
-  itemInerte: {
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    gap: 11,
-    padding: "9px 12px",
-    border: "none",
-    borderRadius: 9,
-    background: "transparent",
-    color: "#5f5f66",
-    font: "400 13.5px Geist, sans-serif",
-    textAlign: "left",
-    cursor: "default",
-  },
-  itemSair: {
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    gap: 11,
-    padding: "9px 12px",
-    border: "none",
-    borderRadius: 9,
-    background: "transparent",
-    color: "#a9a8a3",
-    font: "400 13.5px Geist, sans-serif",
-    textAlign: "left",
-    cursor: "pointer",
-  },
-  rotulo: { flex: 1 },
   divisor: { height: 1, margin: "7px 10px", background: "rgba(255,255,255,0.08)" },
 };
