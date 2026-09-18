@@ -41,7 +41,7 @@ export const AnelDeProgresso = memo(function AnelDeProgresso({ etapa, progresso 
   const tiques = useMemo(() => calcularTiques(progresso, acento), [progresso, acento]);
   return (
     <svg viewBox="0 0 480 480" style={estilos.svg}>
-      <circle cx={240} cy={240} r={RAIO} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth={2} />
+      <circle cx={240} cy={240} r={RAIO} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth={3} />
       <g strokeLinecap="butt">
         {tiques.map((t, i) => (
           <line key={i} x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2} stroke={t.cor} strokeWidth={t.largura} />
@@ -53,7 +53,7 @@ export const AnelDeProgresso = memo(function AnelDeProgresso({ etapa, progresso 
         r={RAIO}
         fill="none"
         stroke={acento}
-        strokeWidth={3}
+        strokeWidth={4}
         strokeLinecap="round"
         strokeDasharray={CIRCUNFERENCIA}
         strokeDashoffset={CIRCUNFERENCIA * (1 - progresso)}
