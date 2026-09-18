@@ -1,5 +1,8 @@
 import type { CSSProperties } from "react";
 import type { EstadoDaTela } from "../bindings";
+import { BotaoIcone } from "./atomos/BotaoIcone";
+import { IconeMenu } from "./atomos/icones/IconeMenu";
+import { PontoPulsante } from "./atomos/PontoPulsante";
 import { acentoDaEtapa } from "./tema";
 
 interface Props {
@@ -15,15 +18,11 @@ export function Cabecalho({ estado, onAbrirMenu, onAlternarWidget }: Props) {
   return (
     <header style={estilos.header}>
       <div style={estilos.grupoEsquerda}>
-        <button title="Menu (M)" style={estilos.botaoIcone} onClick={onAbrirMenu}>
-          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
-            <rect x="2" y="4" width="12" height="1.4" fill="currentColor" />
-            <rect x="2" y="7.3" width="12" height="1.4" fill="currentColor" />
-            <rect x="2" y="10.6" width="12" height="1.4" fill="currentColor" />
-          </svg>
-        </button>
+        <BotaoIcone tamanho={38} formato="arredondado" titulo="Menu (M)" estilo={estilos.botaoIcone} onClick={onAbrirMenu}>
+          <IconeMenu />
+        </BotaoIcone>
         <div style={estilos.badge}>
-          <span style={{ ...estilos.pontoPulsante, background: acento }} />
+          <PontoPulsante cor={acento} />
           <span style={estilos.modoTexto}>{rotuloModo[estado.etapa]}</span>
           <span style={estilos.separador} />
           <span style={estilos.sessaoTexto}>
@@ -52,15 +51,9 @@ const estilos: Record<string, CSSProperties> = {
   },
   grupoEsquerda: { display: "flex", alignItems: "center", gap: 14 },
   botaoIcone: {
-    width: 38,
-    height: 38,
-    display: "grid",
-    placeItems: "center",
-    borderRadius: 11,
     border: "1px solid rgba(255,255,255,0.09)",
     background: "rgba(255,255,255,0.03)",
     color: "#cfcec9",
-    cursor: "pointer",
   },
   badge: {
     display: "flex",
@@ -70,12 +63,6 @@ const estilos: Record<string, CSSProperties> = {
     borderRadius: 999,
     border: "1px solid rgba(255,255,255,0.07)",
     background: "rgba(255,255,255,0.02)",
-  },
-  pontoPulsante: {
-    width: 7,
-    height: 7,
-    borderRadius: "50%",
-    animation: "breathe 3.4s ease-in-out infinite",
   },
   modoTexto: {
     fontFamily: "'Geist Mono', monospace",

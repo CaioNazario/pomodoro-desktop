@@ -1,6 +1,14 @@
 import "./Widget.css";
 import { useCallback, useRef, useState, type CSSProperties, type MouseEvent as EventoDoMouseReact } from "react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { BarraDeProgresso } from "./componentes/atomos/BarraDeProgresso";
+import { BotaoIcone } from "./componentes/atomos/BotaoIcone";
+import { IconeMinimizar } from "./componentes/atomos/icones/IconeMinimizar";
+import { IconePausa } from "./componentes/atomos/icones/IconePausa";
+import { IconePlay } from "./componentes/atomos/icones/IconePlay";
+import { IconePontos } from "./componentes/atomos/icones/IconePontos";
+import { IconeReset } from "./componentes/atomos/icones/IconeReset";
+import { PontoPulsante } from "./componentes/atomos/PontoPulsante";
 import { acentoDaEtapa } from "./componentes/tema";
 import { useEstadoDoTimer } from "./useEstadoDoTimer";
 
@@ -91,11 +99,15 @@ export function Widget() {
   if (minimizado) {
     return (
       <button onMouseDown={aoPressionar} onClick={aoClicarBotao} title="Abrir widget" style={estilos.pilula}>
-        <span style={{ ...estilos.pontoPulsante, background: acento }} />
+        <PontoPulsante cor={acento} />
         <span style={estilos.relogioPilula}>{relogio}</span>
-        <span style={estilos.barraPilula}>
-          <span style={{ ...estilos.progressoPilula, width: `${progresso * 100}%`, background: acento }} />
-        </span>
+        <BarraDeProgresso
+          progresso={progresso}
+          cor={acento}
+          corDeFundo="rgba(255,255,255,0.14)"
+          transicao={false}
+          estilo={{ width: 26, flexShrink: 0 }}
+        />
       </button>
     );
   }
@@ -108,86 +120,37 @@ export function Widget() {
           {modeLabel} · {cycleLabel}
         </span>
         <div style={estilos.botoesCabecalho}>
-          <button title="Minimizar" style={estilos.botaoCirculo} onClick={() => setMinimizado(true)}>
+          <BotaoIcone tamanho={20} titulo="Minimizar" estilo={estilos.botaoCirculo} onClick={() => setMinimizado(true)}>
             <IconeMinimizar />
-          </button>
-          <button title="Fechar" style={estilos.botaoCirculo} onClick={() => getCurrentWindow().close()}>
+          </BotaoIcone>
+          <BotaoIcone
+            tamanho={20}
+            titulo="Fechar"
+            estilo={estilos.botaoCirculo}
+            onClick={() => getCurrentWindow().close()}
+          >
             ×
-          </button>
+          </BotaoIcone>
         </div>
       </div>
       <div style={estilos.linhaRelogio}>
         <span style={estilos.relogioGrande}>{relogio}</span>
         <div style={estilos.botoesControle}>
-          <button title="Reiniciar" style={estilos.botaoReset} onClick={reiniciarEtapa}>
-            <IconeReset />
-          </button>
-          <button
-            title="Iniciar / pausar"
-            style={{ ...estilos.botaoPlay, background: acento }}
+          <BotaoIcone tamanho={34} titulo="Reiniciar" estilo={estilos.botaoReset} onClick={reiniciarEtapa}>
+            <IconeReset tamanho={13} />
+          </BotaoIcone>
+          <BotaoIcone
+            tamanho={44}
+            titulo="Iniciar / pausar"
+            estilo={{ ...estilos.botaoPlay, background: acento }}
             onClick={alternarExecucao}
           >
-            {estado.rodando ? <IconePausaPequena /> : <IconePlayPequeno />}
-          </button>
+            {estado.rodando ? <IconePausa tamanho={14} /> : <IconePlay tamanho={14} />}
+          </BotaoIcone>
         </div>
       </div>
-      <div style={estilos.barra}>
-        <div style={{ ...estilos.progresso, width: `${progresso * 100}%`, background: acento }} />
-      </div>
+      <BarraDeProgresso progresso={progresso} cor={acento} estilo={{ marginTop: 14 }} />
     </div>
-  );
-}
-
-function IconePontos() {
-  return (
-    <svg width="9" height="12" viewBox="0 0 9 12" aria-hidden="true" style={{ opacity: 0.55 }}>
-      <circle cx="2" cy="2" r="1" fill="currentColor" />
-      <circle cx="7" cy="2" r="1" fill="currentColor" />
-      <circle cx="2" cy="6" r="1" fill="currentColor" />
-      <circle cx="7" cy="6" r="1" fill="currentColor" />
-      <circle cx="2" cy="10" r="1" fill="currentColor" />
-      <circle cx="7" cy="10" r="1" fill="currentColor" />
-    </svg>
-  );
-}
-
-function IconeMinimizar() {
-  return (
-    <svg width="9" height="9" viewBox="0 0 10 10" aria-hidden="true">
-      <rect x="1" y="4.4" width="8" height="1.3" rx="0.65" fill="currentColor" />
-    </svg>
-  );
-}
-
-function IconeReset() {
-  return (
-    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path d="M3 8a5 5 0 1 0 1.9-3.9" stroke="currentColor" strokeWidth={1.4} strokeLinecap="round" />
-      <path
-        d="M2.7 2.8v2.8h2.8"
-        stroke="currentColor"
-        strokeWidth={1.4}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function IconePlayPequeno() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M8 5.2 18.4 12 8 18.8z" fill="currentColor" />
-    </svg>
-  );
-}
-
-function IconePausaPequena() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
-      <rect x="7" y="5" width="3.4" height="14" rx="1.2" fill="currentColor" />
-      <rect x="13.6" y="5" width="3.4" height="14" rx="1.2" fill="currentColor" />
-    </svg>
   );
 }
 
@@ -225,17 +188,11 @@ const estilos: Record<string, CSSProperties> = {
   },
   botoesCabecalho: { display: "flex", alignItems: "center", gap: 6 },
   botaoCirculo: {
-    width: 20,
-    height: 20,
-    display: "grid",
-    placeItems: "center",
-    borderRadius: "50%",
     border: "none",
     background: "rgba(255,255,255,0.08)",
     color: "#9a9a9f",
     fontSize: 11,
     lineHeight: 1,
-    cursor: "pointer",
   },
   linhaRelogio: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14 },
   relogioGrande: {
@@ -249,34 +206,14 @@ const estilos: Record<string, CSSProperties> = {
   },
   botoesControle: { display: "flex", alignItems: "center", gap: 8 },
   botaoReset: {
-    width: 34,
-    height: 34,
-    display: "grid",
-    placeItems: "center",
-    borderRadius: "50%",
     border: "1px solid rgba(255,255,255,0.14)",
     background: "transparent",
     color: "#b9b8b2",
-    cursor: "pointer",
   },
   botaoPlay: {
-    width: 44,
-    height: 44,
-    display: "grid",
-    placeItems: "center",
-    borderRadius: "50%",
     border: "none",
     color: "#100b05",
-    cursor: "pointer",
   },
-  barra: {
-    marginTop: 14,
-    height: 3,
-    borderRadius: 999,
-    background: "rgba(255,255,255,0.1)",
-    overflow: "hidden",
-  },
-  progresso: { height: "100%", transition: "width .2s linear" },
   pilula: {
     boxSizing: "border-box",
     width: LARGURA_MINIMIZADO,
@@ -293,13 +230,6 @@ const estilos: Record<string, CSSProperties> = {
     cursor: "pointer",
     userSelect: "none",
   },
-  pontoPulsante: {
-    width: 7,
-    height: 7,
-    borderRadius: "50%",
-    animation: "breathe 3.4s ease-in-out infinite",
-    flexShrink: 0,
-  },
   relogioPilula: {
     fontWeight: 400,
     fontSize: 17,
@@ -308,13 +238,4 @@ const estilos: Record<string, CSSProperties> = {
     color: "#f6f5f1",
     whiteSpace: "nowrap",
   },
-  barraPilula: {
-    width: 26,
-    height: 3,
-    borderRadius: 999,
-    background: "rgba(255,255,255,0.14)",
-    overflow: "hidden",
-    flexShrink: 0,
-  },
-  progressoPilula: { display: "block", height: "100%" },
 };
