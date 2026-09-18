@@ -1,10 +1,10 @@
-import "./Widget.css";
+import "./PaginaWidget.css";
 import { useCallback, useRef, useState, type MouseEvent as EventoDoMouseReact } from "react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { CartaoDoWidget } from "./componentes/organismos/CartaoDoWidget";
-import { PilulaDoWidget } from "./componentes/organismos/PilulaDoWidget";
-import { acentoDaEtapa } from "./componentes/tema";
-import { useEstadoDoTimer } from "./useEstadoDoTimer";
+import { CartaoDoWidget } from "../componentes/organismos/CartaoDoWidget";
+import { PilulaDoWidget } from "../componentes/organismos/PilulaDoWidget";
+import { acentoDaEtapa } from "../componentes/tema";
+import { useEstadoDoTimer } from "../useEstadoDoTimer";
 
 function formatarMMSS(ms: number): string {
   const segundos = Math.floor(ms / 1000);
@@ -59,7 +59,7 @@ function useArrastoDaPilula(aoClicar: () => void) {
   return { aoPressionar, aoClicarBotao };
 }
 
-export function Widget() {
+export function PaginaWidget() {
   const { estado, restanteMs, alternarExecucao, reiniciarEtapa } = useEstadoDoTimer();
   const [minimizado, setMinimizado] = useState(false);
   const { aoPressionar, aoClicarBotao } = useArrastoDaPilula(() => setMinimizado(false));

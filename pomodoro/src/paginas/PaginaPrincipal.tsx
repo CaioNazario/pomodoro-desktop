@@ -1,17 +1,17 @@
-import "./App.css";
+import "./PaginaPrincipal.css";
 import { useEffect, useState, type CSSProperties } from "react";
-import { commands } from "./bindings";
-import { AnelDeProgresso } from "./componentes/AnelDeProgresso";
-import { Cabecalho } from "./componentes/Cabecalho";
-import { ControlesDeTimer } from "./componentes/ControlesDeTimer";
-import { MenuLateral } from "./componentes/MenuLateral";
-import { OverlayDeTomadaDeFoco } from "./componentes/OverlayDeTomadaDeFoco";
-import { PontosDoCiclo } from "./componentes/PontosDoCiclo";
-import { Relogio } from "./componentes/Relogio";
-import { Rodape } from "./componentes/Rodape";
-import { useBloqueioAtivo } from "./useBloqueioAtivo";
-import { useEstadoDoTimer } from "./useEstadoDoTimer";
-import { useOverlayDeTomadaDeFoco } from "./useOverlayDeTomadaDeFoco";
+import { commands } from "../bindings";
+import { AnelDeProgresso } from "../componentes/atomos/AnelDeProgresso";
+import { PontosDoCiclo } from "../componentes/atomos/PontosDoCiclo";
+import { Relogio } from "../componentes/moleculas/Relogio";
+import { Cabecalho } from "../componentes/organismos/Cabecalho";
+import { ControlesDeTimer } from "../componentes/organismos/ControlesDeTimer";
+import { MenuLateral } from "../componentes/organismos/MenuLateral";
+import { OverlayDeTomadaDeFoco } from "../componentes/organismos/OverlayDeTomadaDeFoco";
+import { Rodape } from "../componentes/organismos/Rodape";
+import { useBloqueioAtivo } from "../useBloqueioAtivo";
+import { useEstadoDoTimer } from "../useEstadoDoTimer";
+import { useOverlayDeTomadaDeFoco } from "../useOverlayDeTomadaDeFoco";
 
 // Fatia 1: 4 sessoes fixas, 25/5 global — mesmos valores hardcoded em
 // `ciclo_inicial()` no src-tauri. Vira configuravel na fatia 2.
@@ -45,7 +45,7 @@ function useMenuLateral(emBloqueio: boolean) {
   return { aberto, abrir: () => setAberto(true), fechar: () => setAberto(false) };
 }
 
-function App() {
+export function PaginaPrincipal() {
   const { estado, restanteMs, alternarExecucao, reiniciarEtapa, pularEtapa, alterarIniciarAutomaticamente } =
     useEstadoDoTimer();
   const emBloqueio = useBloqueioAtivo();
@@ -131,5 +131,3 @@ const estilos: Record<string, CSSProperties> = {
     aspectRatio: "1",
   },
 };
-
-export default App;

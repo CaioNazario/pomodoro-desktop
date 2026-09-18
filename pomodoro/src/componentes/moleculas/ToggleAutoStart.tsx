@@ -1,5 +1,5 @@
 import { Interruptor } from "../atomos/Interruptor";
-import { ItemDeMenu } from "../moleculas/ItemDeMenu";
+import { ItemDeMenu } from "./ItemDeMenu";
 
 interface Props {
   ativo: boolean;

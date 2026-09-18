@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import { commands, type EstadoDoPlano, type SessaoDoPlano } from "../../bindings";
-import { estilosDoMenu } from "./estilosDoMenu";
-import { emMinutos, FOCO_MIN_MAX, FOCO_MIN_MIN, FOCO_PASSO_MIN, PAUSA_MIN_MAX, PAUSA_MIN_MIN, PAUSA_PASSO_MIN } from "./limitesDoPlano";
+import { estilosDoMenu } from "../estilosDoMenu";
+import { emMinutos, FOCO_MIN_MAX, FOCO_MIN_MIN, FOCO_PASSO_MIN, PAUSA_MIN_MAX, PAUSA_MIN_MIN, PAUSA_PASSO_MIN } from "../limitesDoPlano";
 
 interface Props {
   plano: EstadoDoPlano;

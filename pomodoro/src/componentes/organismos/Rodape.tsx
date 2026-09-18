@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
-import type { EstadoDaTela } from "../bindings";
-import { useContadoresDoDia } from "../useContadoresDoDia";
+import type { EstadoDaTela } from "../../bindings";
+import { useContadoresDoDia } from "../../useContadoresDoDia";
 
 interface Props {
   estado: EstadoDaTela;

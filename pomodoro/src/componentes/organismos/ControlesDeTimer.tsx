@@ -1,11 +1,11 @@
 import type { CSSProperties } from "react";
-import type { Etapa } from "../bindings";
-import { BotaoIcone } from "./atomos/BotaoIcone";
-import { IconePausa } from "./atomos/icones/IconePausa";
-import { IconePlay } from "./atomos/icones/IconePlay";
-import { IconeReset } from "./atomos/icones/IconeReset";
-import { IconeSkip } from "./atomos/icones/IconeSkip";
-import { acentoDaEtapa } from "./tema";
+import type { Etapa } from "../../bindings";
+import { BotaoIcone } from "../atomos/BotaoIcone";
+import { IconePausa } from "../atomos/icones/IconePausa";
+import { IconePlay } from "../atomos/icones/IconePlay";
+import { IconeReset } from "../atomos/icones/IconeReset";
+import { IconeSkip } from "../atomos/icones/IconeSkip";
+import { acentoDaEtapa } from "../tema";
 
 interface Props {
   etapa: Etapa;

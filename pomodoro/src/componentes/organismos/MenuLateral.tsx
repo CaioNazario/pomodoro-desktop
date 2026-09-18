@@ -1,13 +1,13 @@
 import { exit } from "@tauri-apps/plugin-process";
 import { useCallback, type CSSProperties } from "react";
-import { usePlanoDoCiclo } from "../usePlanoDoCiclo";
-import { AtividadesNasPausas } from "./menu/AtividadesNasPausas";
-import { DuracoesDoPlano } from "./menu/DuracoesDoPlano";
-import { estilosDoMenu } from "./menu/estilosDoMenu";
-import { SeletorDeModo } from "./menu/SeletorDeModo";
-import { SeletorDeSessoes } from "./menu/SeletorDeSessoes";
-import { ToggleAutoStart } from "./menu/ToggleAutoStart";
-import { ItemDeMenu } from "./moleculas/ItemDeMenu";
+import { usePlanoDoCiclo } from "../../usePlanoDoCiclo";
+import { estilosDoMenu } from "../estilosDoMenu";
+import { ItemDeMenu } from "../moleculas/ItemDeMenu";
+import { SeletorDeModo } from "../moleculas/SeletorDeModo";
+import { SeletorDeSessoes } from "../moleculas/SeletorDeSessoes";
+import { ToggleAutoStart } from "../moleculas/ToggleAutoStart";
+import { AtividadesNasPausas } from "./AtividadesNasPausas";
+import { DuracoesDoPlano } from "./DuracoesDoPlano";
 
 interface Props {
   aberto: boolean;

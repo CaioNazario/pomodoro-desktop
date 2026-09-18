@@ -1,6 +1,6 @@
 import { memo, useMemo, type CSSProperties } from "react";
-import type { Etapa } from "../bindings";
-import { acentoDaEtapa } from "./tema";
+import type { Etapa } from "../../bindings";
+import { acentoDaEtapa } from "../tema";
 
 interface Props {
   etapa: Etapa;

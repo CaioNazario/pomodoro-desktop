@@ -1,9 +1,9 @@
 import type { CSSProperties } from "react";
-import type { EstadoDaTela } from "../bindings";
-import { BotaoIcone } from "./atomos/BotaoIcone";
-import { IconeMenu } from "./atomos/icones/IconeMenu";
-import { PontoPulsante } from "./atomos/PontoPulsante";
-import { acentoDaEtapa } from "./tema";
+import type { EstadoDaTela } from "../../bindings";
+import { BotaoIcone } from "../atomos/BotaoIcone";
+import { IconeMenu } from "../atomos/icones/IconeMenu";
+import { PontoPulsante } from "../atomos/PontoPulsante";
+import { acentoDaEtapa } from "../tema";
 
 interface Props {
   estado: EstadoDaTela;

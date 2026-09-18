@@ -1,6 +1,6 @@
 import { commands } from "../../bindings";
-import { estilosDoMenu } from "./estilosDoMenu";
-import { SESSOES_MAX, SESSOES_MIN } from "./limitesDoPlano";
+import { estilosDoMenu } from "../estilosDoMenu";
+import { SESSOES_MAX, SESSOES_MIN } from "../limitesDoPlano";
 
 interface Props {
   totalSessoes: number;

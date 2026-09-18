@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
+import { PaginaPrincipal } from "./paginas/PaginaPrincipal";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <App />
+    <PaginaPrincipal />
   </React.StrictMode>,
 );
