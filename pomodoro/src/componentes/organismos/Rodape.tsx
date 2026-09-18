@@ -1,11 +1,11 @@
 import type { CSSProperties } from "react";
 import type { EstadoDaTela } from "../../bindings";
 import { useContadoresDoDia } from "../../useContadoresDoDia";
+import { usePlanoDoCiclo } from "../../usePlanoDoCiclo";
+import { emMinutos } from "../limitesDoPlano";
 
 interface Props {
   estado: EstadoDaTela;
-  duracaoFocoMin: number;
-  duracaoPausaMin: number;
 }
 
 function formatarHorasEMinutos(ms: number): string {
@@ -15,10 +15,15 @@ function formatarHorasEMinutos(ms: number): string {
   return `${horas}h ${minutos}m`;
 }
 
-export function Rodape({ estado, duracaoFocoMin, duracaoPausaMin }: Props) {
+export function Rodape({ estado }: Props) {
   const contadores = useContadoresDoDia();
+  const plano = usePlanoDoCiclo();
   const sessoesHoje = contadores?.sessoesConcluidasHoje ?? 0;
   const tempoDeFocoHoje = contadores?.tempoDeFocoHojeMs ?? 0;
+
+  const sessaoAtual = plano?.planoIndividual[estado.numeroSessao - 1];
+  const focoMs = plano?.modo === "global" ? plano.duracaoGlobalFocoMs : (sessaoAtual?.focoMs ?? 0);
+  const pausaMs = plano?.modo === "global" ? plano.duracaoGlobalPausaMs : (sessaoAtual?.pausaMs ?? 0);
 
   return (
     <footer style={estilos.footer}>
@@ -28,10 +33,10 @@ export function Rodape({ estado, duracaoFocoMin, duracaoPausaMin }: Props) {
       </div>
       <div style={estilos.grupo}>
         <span>
-          {duracaoFocoMin} / {duracaoPausaMin} min
+          {emMinutos(focoMs)} / {emMinutos(pausaMs)} min
         </span>
         <span style={estilos.destaque}>
-          Ciclo {estado.numeroSessao}/{estado.totalSessoes} · global
+          Ciclo {estado.numeroSessao}/{estado.totalSessoes} · {plano?.modo ?? "global"}
         </span>
       </div>
     </footer>

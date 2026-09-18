@@ -13,11 +13,6 @@ import { useBloqueioAtivo } from "../useBloqueioAtivo";
 import { useEstadoDoTimer } from "../useEstadoDoTimer";
 import { useOverlayDeTomadaDeFoco } from "../useOverlayDeTomadaDeFoco";
 
-// Fatia 1: 4 sessoes fixas, 25/5 global — mesmos valores hardcoded em
-// `ciclo_inicial()` no src-tauri. Vira configuravel na fatia 2.
-const DURACAO_FOCO_MIN = 25;
-const DURACAO_PAUSA_MIN = 5;
-
 function rotuloDoEstado(rodando: boolean, foco: boolean, decorridoMs: number): string {
   if (rodando) return foco ? "em foco" : "em pausa";
   return decorridoMs > 0 ? "pausado" : "pronto";
@@ -79,7 +74,7 @@ export function PaginaPrincipal() {
           <PontosDoCiclo etapa={estado.etapa} sessaoAtual={estado.numeroSessao} totalSessoes={estado.totalSessoes} />
         </div>
       </main>
-      <Rodape estado={estado} duracaoFocoMin={DURACAO_FOCO_MIN} duracaoPausaMin={DURACAO_PAUSA_MIN} />
+      <Rodape estado={estado} />
       <MenuLateral
         aberto={menu.aberto}
         onFechar={menu.fechar}
