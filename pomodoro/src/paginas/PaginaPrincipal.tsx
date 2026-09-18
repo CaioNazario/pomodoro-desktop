@@ -98,7 +98,7 @@ const estilos: Record<string, CSSProperties> = {
     width: "100%",
     height: "100vh",
     minHeight: 480,
-    background: "#060607",
+    background: "#000000",
     color: "#f3f2ef",
     fontFamily: "Geist, 'Helvetica Neue', Helvetica, sans-serif",
     overflow: "hidden",
