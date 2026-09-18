@@ -48,7 +48,7 @@ const estilos: Record<string, CSSProperties> = {
   },
   clock: {
     fontFamily: "Geist, sans-serif",
-    fontWeight: 300,
+    fontWeight: 350,
     fontSize: "min(11vh, 104px)",
     lineHeight: 0.92,
     letterSpacing: "-0.035em",

@@ -51,7 +51,7 @@ const estilos: Record<string, CSSProperties> = {
     userSelect: "none",
   },
   relogio: {
-    fontWeight: 400,
+    fontWeight: 450,
     fontSize: 17,
     letterSpacing: "-0.01em",
     fontVariantNumeric: "tabular-nums",

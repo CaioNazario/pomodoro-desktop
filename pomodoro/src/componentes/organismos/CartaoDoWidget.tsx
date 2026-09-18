@@ -121,7 +121,7 @@ const estilos: Record<string, CSSProperties> = {
   linhaRelogio: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14 },
   relogioGrande: {
     fontFamily: "Geist, sans-serif",
-    fontWeight: 300,
+    fontWeight: 350,
     fontSize: 44,
     lineHeight: 1,
     letterSpacing: "-0.04em",

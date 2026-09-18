@@ -129,7 +129,7 @@ const estilos: Record<string, CSSProperties> = {
     border: "1px solid rgba(255,255,255,0.09)",
     background: "rgba(255,255,255,0.03)",
     color: "#ecebe6",
-    font: "400 12px Geist, sans-serif",
+    font: "500 12px Geist, sans-serif",
     outline: "none",
   },
   inputUrl: {
@@ -141,7 +141,7 @@ const estilos: Record<string, CSSProperties> = {
     border: "1px solid rgba(255,255,255,0.09)",
     background: "rgba(255,255,255,0.03)",
     color: "#c9c8c3",
-    font: "400 11.5px 'Geist Mono', monospace",
+    font: "500 11.5px 'Geist Mono', monospace",
     outline: "none",
   },
 };

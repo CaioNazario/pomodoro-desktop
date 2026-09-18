@@ -32,7 +32,7 @@ const estilos: Record<string, CSSProperties> = {
     border: "none",
     borderRadius: 9,
     background: "transparent",
-    font: "400 13.5px Geist, sans-serif",
+    font: "500 13.5px Geist, sans-serif",
     textAlign: "left",
   },
   rotulo: { flex: 1 },

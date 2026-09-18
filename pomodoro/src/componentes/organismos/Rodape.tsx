@@ -48,6 +48,7 @@ const estilos: Record<string, CSSProperties> = {
     padding: "24px 28px 26px",
     fontFamily: "'Geist Mono', monospace",
     fontSize: 13.5,
+    fontWeight: 500,
     letterSpacing: ".1em",
     textTransform: "uppercase",
     color: "#b6b5b0",
