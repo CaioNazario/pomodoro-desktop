@@ -1,5 +1,6 @@
 #![forbid(unsafe_code)]
 
+mod alarme;
 mod bloqueio;
 pub mod comandos;
 mod eventos;
@@ -12,6 +13,7 @@ pub mod webview_atividade;
 mod widget;
 
 use comandos::bloqueio::{confirmar_urgencia, definir_visibilidade_atividade};
+use comandos::configuracao::{alterar_som_de_alarme, obter_som_de_alarme};
 use comandos::historico::obter_contadores_do_dia;
 use comandos::plano::{
     alterar_atividade_global, alterar_atividade_individual, alterar_duracao_global_foco,
@@ -25,6 +27,7 @@ use comandos::widget::alternar_widget;
 use pomodoro_config::Configuracao;
 use pomodoro_dominio::{
     CicloEmExecucao, Duracao, HistoricoDiario, NumeroDeSessao, PlanoDoCiclo, QuantidadeDeSessoes,
+    SomDeAlarme,
 };
 use relogio_do_sistema::RelogioDoSistema;
 use std::sync::Mutex;
@@ -51,6 +54,7 @@ fn configuracao_padrao() -> Configuracao {
         ),
         iniciar_automaticamente: true,
         posicao_do_widget: None,
+        som_de_alarme: SomDeAlarme::default(),
     }
 }
 
@@ -171,14 +175,18 @@ fn especificar_contrato() -> Builder<tauri::Wry> {
             obter_contadores_do_dia,
             confirmar_urgencia,
             definir_visibilidade_atividade,
-            alternar_widget
+            alternar_widget,
+            obter_som_de_alarme,
+            alterar_som_de_alarme
         ])
         .events(collect_events![
             eventos::EstadoMudou,
             eventos::PlanoMudou,
             eventos::HistoricoMudou,
             eventos::BloqueioMudou,
-            eventos::TomadaDeFocoOcorreu
+            eventos::TomadaDeFocoOcorreu,
+            eventos::SomDeAlarmeMudou,
+            eventos::TocarAlarme
         ])
 }
 
@@ -225,6 +233,7 @@ pub fn run() {
             gerenciador_de_bloqueio.recuperar_pendente();
             app.manage(gerenciador_de_bloqueio);
             app.manage(widget::EstadoDoWidget::novo(config.posicao_do_widget));
+            app.manage(Mutex::new(config.som_de_alarme));
             encerrar_app_ao_fechar_main(&handle);
             verificador_de_vencimento::iniciar(app.handle().clone());
             Ok(())

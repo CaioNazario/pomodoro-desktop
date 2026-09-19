@@ -1,6 +1,7 @@
 use crate::Configuracao;
 use pomodoro_dominio::{
-    Atividade, ContadoresDoDia, Data, Duracao, ModoDeDuracao, PlanoDoCiclo, Sessao, UrlDeAtividade,
+    Atividade, ContadoresDoDia, Data, Duracao, ModoDeDuracao, PlanoDoCiclo, Sessao, SomDeAlarme,
+    UrlDeAtividade,
 };
 use serde::{Deserialize, Serialize};
 
@@ -26,12 +27,22 @@ pub(crate) struct ConfiguracaoToml {
     historico: Vec<DiaToml>,
     #[serde(default)]
     posicao_do_widget: Option<(i32, i32)>,
+    #[serde(default)]
+    som_de_alarme: SomDeAlarmeToml,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 enum ModoToml {
     Global,
     Individual,
+}
+
+#[derive(Debug, Default, Serialize, Deserialize)]
+enum SomDeAlarmeToml {
+    #[default]
+    Classico,
+    Suave,
+    Urgente,
 }
 
 #[derive(Debug, Default, Serialize, Deserialize)]
@@ -75,6 +86,7 @@ impl ConfiguracaoToml {
             iniciar_automaticamente: config.iniciar_automaticamente,
             historico: Vec::new(),
             posicao_do_widget: config.posicao_do_widget,
+            som_de_alarme: SomDeAlarmeToml::de(config.som_de_alarme),
         }
     }
 
@@ -93,6 +105,7 @@ impl ConfiguracaoToml {
             plano,
             iniciar_automaticamente: self.iniciar_automaticamente,
             posicao_do_widget: self.posicao_do_widget,
+            som_de_alarme: self.som_de_alarme.para_dominio(),
         }
     }
 
@@ -117,6 +130,24 @@ impl ModoToml {
         match self {
             Self::Global => ModoDeDuracao::Global,
             Self::Individual => ModoDeDuracao::Individual,
+        }
+    }
+}
+
+impl SomDeAlarmeToml {
+    fn de(som: SomDeAlarme) -> Self {
+        match som {
+            SomDeAlarme::Classico => Self::Classico,
+            SomDeAlarme::Suave => Self::Suave,
+            SomDeAlarme::Urgente => Self::Urgente,
+        }
+    }
+
+    fn para_dominio(self) -> SomDeAlarme {
+        match self {
+            Self::Classico => SomDeAlarme::Classico,
+            Self::Suave => SomDeAlarme::Suave,
+            Self::Urgente => SomDeAlarme::Urgente,
         }
     }
 }

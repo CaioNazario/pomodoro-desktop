@@ -19,6 +19,8 @@ fn main() {
             "confirmar_urgencia",
             "definir_visibilidade_atividade",
             "alternar_widget",
+            "obter_som_de_alarme",
+            "alterar_som_de_alarme",
         ]));
     tauri_build::try_build(attributes).expect("gerar manifesto de permissoes ACL do app");
 }

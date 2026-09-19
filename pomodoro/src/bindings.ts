@@ -43,6 +43,13 @@ export const commands = {
 	 *  botao "Widget" no cabecalho da janela principal.
 	 */
 	alternarWidget: () => __TAURI_INVOKE<void>("alternar_widget"),
+	/**
+	 *  Preferencia de som de alarme (PRD §7): qual dos 3 sons tocar nas
+	 *  transicoes de etapa de sessoes sem URL aplicavel (ver `crate::alarme`).
+	 *  Nao afeta ciclo nem plano — so a config persistida.
+	 */
+	obterSomDeAlarme: () => typedError<SomDeAlarme, ErroComando>(__TAURI_INVOKE("obter_som_de_alarme")),
+	alterarSomDeAlarme: (novo: SomDeAlarme) => typedError<null, ErroComando>(__TAURI_INVOKE("alterar_som_de_alarme", { novo })),
 };
 
 /** Events */
@@ -51,6 +58,8 @@ export const events = {
 	estadoMudou: makeEvent<EstadoMudou>("estado-mudou"),
 	historicoMudou: makeEvent<HistoricoMudou>("historico-mudou"),
 	planoMudou: makeEvent<PlanoMudou>("plano-mudou"),
+	somDeAlarmeMudou: makeEvent<SomDeAlarmeMudou>("som-de-alarme-mudou"),
+	tocarAlarme: makeEvent<TocarAlarme>("tocar-alarme"),
 	tomadaDeFocoOcorreu: makeEvent<TomadaDeFocoOcorreu>("tomada-de-foco-ocorreu"),
 };
 
@@ -167,6 +176,28 @@ export type SessaoDoPlano = {
 	pausaMs: number,
 	atividade: AtividadeDoPlano,
 };
+
+/**
+ *  Som de alarme — espelho de `pomodoro_dominio::SomDeAlarme` na fronteira
+ *  Rust<->TS. Preferencia pura (ver o dominio), nunca faz parte de
+ *  `EstadoDaTela`/`EstadoDoPlano` — atravessa via seus proprios
+ *  command/evento (`obter_som_de_alarme`, `SomDeAlarmeMudou`).
+ */
+export type SomDeAlarme = "classico" | "suave" | "urgente";
+
+/**
+ *  Emitido quando a preferencia de som de alarme muda (PRD §7, fora de
+ *  bloqueio) — o toggle em si, nao o disparo do som.
+ */
+export type SomDeAlarmeMudou = SomDeAlarme;
+
+/**
+ *  Emitido a cada transicao de etapa cuja pausa envolvida nao tem URL
+ *  aplicavel — quem tem URL ja usa o bloqueio em video como sinal, nao
+ *  precisa de som (ver `verificador_de_vencimento`). Sem payload: o
+ *  frontend ja sabe qual som tocar via `SomDeAlarmeMudou`/`obter_som_de_alarme`.
+ */
+export type TocarAlarme = null;
 
 /**
  *  Emitido so quando a janela principal realmente é trazida pra frente

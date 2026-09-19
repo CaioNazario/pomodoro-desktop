@@ -87,6 +87,38 @@ impl From<ModoDeDuracao> for pomodoro_dominio::ModoDeDuracao {
     }
 }
 
+/// Som de alarme — espelho de `pomodoro_dominio::SomDeAlarme` na fronteira
+/// Rust<->TS. Preferencia pura (ver o dominio), nunca faz parte de
+/// `EstadoDaTela`/`EstadoDoPlano` — atravessa via seus proprios
+/// command/evento (`obter_som_de_alarme`, `SomDeAlarmeMudou`).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Type)]
+#[serde(rename_all = "camelCase")]
+pub enum SomDeAlarme {
+    Classico,
+    Suave,
+    Urgente,
+}
+
+impl From<pomodoro_dominio::SomDeAlarme> for SomDeAlarme {
+    fn from(som: pomodoro_dominio::SomDeAlarme) -> Self {
+        match som {
+            pomodoro_dominio::SomDeAlarme::Classico => SomDeAlarme::Classico,
+            pomodoro_dominio::SomDeAlarme::Suave => SomDeAlarme::Suave,
+            pomodoro_dominio::SomDeAlarme::Urgente => SomDeAlarme::Urgente,
+        }
+    }
+}
+
+impl From<SomDeAlarme> for pomodoro_dominio::SomDeAlarme {
+    fn from(som: SomDeAlarme) -> Self {
+        match som {
+            SomDeAlarme::Classico => pomodoro_dominio::SomDeAlarme::Classico,
+            SomDeAlarme::Suave => pomodoro_dominio::SomDeAlarme::Suave,
+            SomDeAlarme::Urgente => pomodoro_dominio::SomDeAlarme::Urgente,
+        }
+    }
+}
+
 /// Atividade de pausa (PRD §7.1): nome e URL independentemente opcionais.
 /// `rotulo` vem pronto do dominio — o React nao reimplementa a regra de
 /// fallback (nome -> hostname sem "www." -> "atividade").

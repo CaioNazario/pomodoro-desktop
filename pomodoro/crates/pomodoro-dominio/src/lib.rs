@@ -21,6 +21,7 @@ mod relogio;
 #[cfg(test)]
 mod relogio_fake;
 mod sessao;
+mod som_de_alarme;
 mod tempo;
 mod timer;
 mod url_de_atividade;
@@ -40,6 +41,7 @@ pub use plano_do_ciclo::{PlanoDoCiclo, SessaoForaDoPlano};
 pub use quantidade_de_sessoes::{QuantidadeDeSessoes, QuantidadeDeSessoesInvalida};
 pub use relogio::Relogio;
 pub use sessao::Sessao;
+pub use som_de_alarme::SomDeAlarme;
 pub use tempo::{Duracao, DuracaoInvalida, Instante};
 pub use timer::EstadoTimer;
 pub use url_de_atividade::{UrlDeAtividade, UrlDeAtividadeInvalida};

@@ -21,6 +21,8 @@
     "allow-alterar-atividade-individual",
     "allow-obter-contadores-do-dia",
     "allow-alternar-widget",
+    "allow-obter-som-de-alarme",
+    "allow-alterar-som-de-alarme",
     "process:allow-exit"
   ]
 }

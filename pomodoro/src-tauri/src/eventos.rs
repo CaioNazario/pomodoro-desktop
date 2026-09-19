@@ -1,4 +1,4 @@
-use pomodoro_contrato::{EstadoDaTela, EstadoDoBloqueio, EstadoDoHistorico, EstadoDoPlano};
+use pomodoro_contrato::{EstadoDaTela, EstadoDoBloqueio, EstadoDoHistorico, EstadoDoPlano, SomDeAlarme};
 use tauri::AppHandle;
 use tauri_specta::Event;
 
@@ -28,6 +28,18 @@ pub struct BloqueioMudou(pub EstadoDoBloqueio);
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type, tauri_specta::Event)]
 pub struct TomadaDeFocoOcorreu;
 
+/// Emitido quando a preferencia de som de alarme muda (PRD §7, fora de
+/// bloqueio) — o toggle em si, nao o disparo do som.
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type, tauri_specta::Event)]
+pub struct SomDeAlarmeMudou(pub SomDeAlarme);
+
+/// Emitido a cada transicao de etapa cuja pausa envolvida nao tem URL
+/// aplicavel — quem tem URL ja usa o bloqueio em video como sinal, nao
+/// precisa de som (ver `verificador_de_vencimento`). Sem payload: o
+/// frontend ja sabe qual som tocar via `SomDeAlarmeMudou`/`obter_som_de_alarme`.
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type, tauri_specta::Event)]
+pub struct TocarAlarme;
+
 pub fn emitir(app: &AppHandle, tela: EstadoDaTela) {
     let _ = EstadoMudou(tela).emit(app);
 }
@@ -46,4 +58,12 @@ pub fn emitir_bloqueio(app: &AppHandle, bloqueio: EstadoDoBloqueio) {
 
 pub fn emitir_tomada_de_foco(app: &AppHandle) {
     let _ = TomadaDeFocoOcorreu.emit(app);
+}
+
+pub fn emitir_som_de_alarme(app: &AppHandle, som: SomDeAlarme) {
+    let _ = SomDeAlarmeMudou(som).emit(app);
+}
+
+pub fn emitir_tocar_alarme(app: &AppHandle) {
+    let _ = TocarAlarme.emit(app);
 }

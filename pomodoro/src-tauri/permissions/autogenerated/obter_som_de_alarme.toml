@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-obter-som-de-alarme"
+description = "Enables the obter_som_de_alarme command without any pre-configured scope."
+commands.allow = ["obter_som_de_alarme"]
+
+[[permission]]
+identifier = "deny-obter-som-de-alarme"
+description = "Denies the obter_som_de_alarme command without any pre-configured scope."
+commands.deny = ["obter_som_de_alarme"]

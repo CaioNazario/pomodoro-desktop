@@ -1,5 +1,5 @@
 use pomodoro_config::{Armazenamento, Configuracao};
-use pomodoro_dominio::{CicloEmExecucao, HistoricoDiario, PlanoDoCiclo};
+use pomodoro_dominio::{CicloEmExecucao, HistoricoDiario, PlanoDoCiclo, SomDeAlarme};
 use std::path::PathBuf;
 use std::sync::Mutex;
 use tauri::{AppHandle, Manager};
@@ -98,9 +98,14 @@ fn configuracao_atual(app: &AppHandle) -> Option<Configuracao> {
     let posicao_do_widget = app
         .try_state::<crate::widget::EstadoDoWidget>()
         .and_then(|estado| estado.posicao_atual());
+    let som_de_alarme = app
+        .try_state::<Mutex<SomDeAlarme>>()
+        .and_then(|estado| estado.lock().ok().map(|guarda| *guarda))
+        .unwrap_or_default();
     Some(Configuracao {
         plano: plano.clone(),
         iniciar_automaticamente: ciclo.iniciar_automaticamente(),
         posicao_do_widget,
+        som_de_alarme,
     })
 }

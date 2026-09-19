@@ -38,11 +38,22 @@ fn verificar(app: &AppHandle) {
 
     let ciclo_antes = *estado;
     let hoje = relogio_state.hoje();
+    // A atividade da pausa ENVOLVIDA nesta transicao e sempre a da sessao de
+    // antes de avancar: em Foco->Pausa a sessao nao muda (a pausa que comeca
+    // e a da propria sessao); em Pausa->Foco, `avancar` ja pulou pra proxima
+    // sessao (`ciclo_em_execucao.rs::avancar`), entao usar `estado.sessao()`
+    // depois do avanco pegaria a atividade errada (a do PROXIMO foco, nao a
+    // da pausa que acabou de terminar).
+    let atividade_da_transicao = plano.atividade_ativa_para(ciclo_antes.sessao()).clone();
     let tela_depois = avancar_e_emitir(app, &mut estado, &plano, agora);
     let etapa_depois = estado.etapa();
     let atividade_da_pausa = plano.atividade_ativa_para(estado.sessao()).clone();
     drop(estado);
     drop(plano);
+
+    if crate::alarme::deve_tocar_alarme(&atividade_da_transicao) {
+        crate::eventos::emitir_tocar_alarme(app);
+    }
 
     crate::registro_de_foco::registrar_saida_de_foco(
         app,

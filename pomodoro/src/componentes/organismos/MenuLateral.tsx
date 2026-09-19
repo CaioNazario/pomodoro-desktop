@@ -8,6 +8,7 @@ import { SeletorDeSessoes } from "../moleculas/SeletorDeSessoes";
 import { ToggleAutoStart } from "../moleculas/ToggleAutoStart";
 import { AtividadesNasPausas } from "./AtividadesNasPausas";
 import { DuracoesDoPlano } from "./DuracoesDoPlano";
+import { SeletorDeSomDeAlarme } from "./SeletorDeSomDeAlarme";
 
 interface Props {
   aberto: boolean;
@@ -51,6 +52,8 @@ export function MenuLateral({ aberto, onFechar, iniciarAutomaticamente, onAltera
             <ToggleAutoStart ativo={iniciarAutomaticamente} onAlterar={onAlterarIniciarAutomaticamente} />
             <div style={estilosDoMenu.divisor} />
             <AtividadesNasPausas plano={plano} />
+            <div style={estilosDoMenu.divisor} />
+            <SeletorDeSomDeAlarme />
             <div style={estilosDoMenu.divisor} />
           </>
         )}

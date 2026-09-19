@@ -129,7 +129,7 @@ mod testes {
     use super::*;
     use pomodoro_dominio::{
         Atividade, ContadoresDoDia, Data, Duracao, NumeroDeSessao, PlanoDoCiclo,
-        QuantidadeDeSessoes, UrlDeAtividade,
+        QuantidadeDeSessoes, SomDeAlarme, UrlDeAtividade,
     };
     use std::sync::Arc;
 
@@ -142,6 +142,7 @@ mod testes {
             ),
             iniciar_automaticamente: true,
             posicao_do_widget: None,
+            som_de_alarme: SomDeAlarme::Classico,
         }
     }
 
@@ -154,6 +155,7 @@ mod testes {
             ),
             iniciar_automaticamente: false,
             posicao_do_widget: Some((120, 340)),
+            som_de_alarme: SomDeAlarme::Urgente,
         }
     }
 
@@ -174,6 +176,30 @@ mod testes {
         );
         assert!(!carregada.iniciar_automaticamente);
         assert_eq!(carregada.posicao_do_widget, Some((120, 340)));
+        assert_eq!(carregada.som_de_alarme, SomDeAlarme::Urgente);
+    }
+
+    #[test]
+    fn toml_sem_som_de_alarme_carrega_como_classico() {
+        let dir = tempfile::tempdir().expect("tempdir");
+        let caminho = dir.path().join("config.toml");
+        std::fs::write(
+            &caminho,
+            r#"
+versao = 1
+modo = "Global"
+duracao_global_foco_ms = 1500000
+duracao_global_pausa_ms = 300000
+iniciar_automaticamente = true
+plano_individual = []
+"#,
+        )
+        .expect("escrever toml sem som_de_alarme");
+        let armazenamento = Armazenamento::em(caminho);
+
+        let carregada = armazenamento.carregar(config_padrao);
+
+        assert_eq!(carregada.som_de_alarme, SomDeAlarme::Classico);
     }
 
     #[test]
@@ -264,6 +290,7 @@ pausas_interrompidas = 1
             plano,
             iniciar_automaticamente: true,
             posicao_do_widget: None,
+            som_de_alarme: SomDeAlarme::Classico,
         };
 
         armazenamento.salvar(&config).expect("salvar");
@@ -390,6 +417,7 @@ url = "javascript:alert(1)"
                         ),
                         iniciar_automaticamente: true,
                         posicao_do_widget: None,
+                        som_de_alarme: SomDeAlarme::Classico,
                     };
                     armazenamento.salvar(&config)
                 })
