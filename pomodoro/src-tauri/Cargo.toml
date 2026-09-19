@@ -1,6 +1,6 @@
 [package]
 name = "pomodoro"
-version = "0.1.0"
+version = "0.3.0"
 description = "Timer pomodoro com tomada de foco"
 authors = ["Caio Nazario <nazzariocaio@gmail.com>"]
 edition = "2021"
