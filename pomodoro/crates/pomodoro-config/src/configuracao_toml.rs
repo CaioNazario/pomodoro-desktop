@@ -1,7 +1,6 @@
 use crate::Configuracao;
 use pomodoro_dominio::{
-    Atividade, ContadoresDoDia, Data, Duracao, HistoricoDiario, ModoDeDuracao, PlanoDoCiclo,
-    Sessao, UrlDeAtividade,
+    Atividade, ContadoresDoDia, Data, Duracao, ModoDeDuracao, PlanoDoCiclo, Sessao, UrlDeAtividade,
 };
 use serde::{Deserialize, Serialize};
 
@@ -19,7 +18,11 @@ pub(crate) struct ConfiguracaoToml {
     atividade_global: AtividadeToml,
     plano_individual: Vec<SessaoToml>,
     iniciar_automaticamente: bool,
-    #[serde(default)]
+    /// So pra leitura: arquivos de antes da migracao pro SQLite
+    /// (`pomodoro-historico`) ainda tem o historico embutido aqui.
+    /// `Armazenamento::historico_legado` le esse campo pra migrar uma
+    /// unica vez; escritas novas sempre gravam lista vazia.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     historico: Vec<DiaToml>,
     #[serde(default)]
     posicao_do_widget: Option<(i32, i32)>,
@@ -70,7 +73,7 @@ impl ConfiguracaoToml {
                 .map(SessaoToml::de)
                 .collect(),
             iniciar_automaticamente: config.iniciar_automaticamente,
-            historico: config.historico.dias().map(DiaToml::de).collect(),
+            historico: Vec::new(),
             posicao_do_widget: config.posicao_do_widget,
         }
     }
@@ -86,18 +89,19 @@ impl ConfiguracaoToml {
                 .map(SessaoToml::para_dominio)
                 .collect(),
         );
-        let historico = HistoricoDiario::reconstruir(
-            self.historico
-                .into_iter()
-                .map(DiaToml::para_dominio)
-                .collect(),
-        );
         Configuracao {
             plano,
             iniciar_automaticamente: self.iniciar_automaticamente,
-            historico,
             posicao_do_widget: self.posicao_do_widget,
         }
+    }
+
+    /// So pra migracao: historico embutido no arquivo antigo, se houver.
+    pub(crate) fn historico_legado(self) -> Vec<ContadoresDoDia> {
+        self.historico
+            .into_iter()
+            .map(DiaToml::para_dominio)
+            .collect()
     }
 }
 
@@ -153,17 +157,6 @@ impl SessaoToml {
 }
 
 impl DiaToml {
-    fn de(dia: ContadoresDoDia) -> Self {
-        Self {
-            ano: dia.dia_de_referencia().ano(),
-            mes: dia.dia_de_referencia().mes(),
-            dia: dia.dia_de_referencia().dia(),
-            sessoes_concluidas: dia.sessoes_concluidas(),
-            tempo_de_foco_ms: dia.tempo_de_foco().em_ms(),
-            pausas_interrompidas: dia.pausas_interrompidas(),
-        }
-    }
-
     fn para_dominio(self) -> ContadoresDoDia {
         ContadoresDoDia::reconstruir(
             Data::de(self.ano, self.mes, self.dia),

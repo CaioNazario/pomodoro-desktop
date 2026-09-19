@@ -50,7 +50,6 @@ fn configuracao_padrao() -> Configuracao {
             Duracao::de_minutos(DURACAO_PAUSA_INICIAL_MIN),
         ),
         iniciar_automaticamente: true,
-        historico: HistoricoDiario::vazio(),
         posicao_do_widget: None,
     }
 }
@@ -79,7 +78,7 @@ pub fn plano_inicial() -> PlanoDoCiclo {
 }
 
 pub fn historico_inicial() -> HistoricoDiario {
-    configuracao_padrao().historico
+    HistoricoDiario::vazio()
 }
 
 /// Journal do snapshot de atalhos suprimidos (PRD §7.3) — resolvido via
@@ -215,10 +214,10 @@ pub fn run() {
         .setup(move |app| {
             builder.mount_events(app);
             let handle = app.handle().clone();
-            let config = persistencia::carregar(&handle, configuracao_padrao);
+            let (config, historico) = persistencia::carregar(&handle, configuracao_padrao);
             app.manage(Mutex::new(ciclo_a_partir_de(&config)));
             app.manage(Mutex::new(config.plano));
-            app.manage(Mutex::new(config.historico));
+            app.manage(Mutex::new(historico));
             app.manage(RelogioDoSistema);
             let gerenciador_de_bloqueio =
                 bloqueio::GerenciadorDeBloqueio::novo(caminho_snapshot_de_atalhos(&handle));

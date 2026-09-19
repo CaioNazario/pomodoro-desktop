@@ -1,0 +1,12 @@
+[package]
+name = "pomodoro-historico"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+thiserror.workspace = true
+rusqlite = { version = "0.32", features = ["bundled"] }
+pomodoro-dominio = { version = "0.1.0", path = "../pomodoro-dominio" }
+
+[dev-dependencies]
+tempfile = "3"

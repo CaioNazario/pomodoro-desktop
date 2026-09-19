@@ -29,6 +29,7 @@ specta-typescript = "0.0.12"
 pomodoro-dominio = { version = "0.1.0", path = "../crates/pomodoro-dominio" }
 pomodoro-contrato = { version = "0.1.0", path = "../crates/pomodoro-contrato" }
 pomodoro-config = { version = "0.1.0", path = "../crates/pomodoro-config" }
+pomodoro-historico = { version = "0.1.0", path = "../crates/pomodoro-historico" }
 pomodoro-atalhos-gnome = { version = "0.1.0", path = "../crates/pomodoro-atalhos-gnome" }
 tauri-plugin-process = "2.3.1"
 tauri-plugin-single-instance = "2.4.3"

@@ -1,6 +1,7 @@
 use crate::configuracao_toml::{ConfiguracaoToml, VERSAO_ATUAL};
 use crate::escrita_atomica::escrever_atomico;
 use crate::Configuracao;
+use pomodoro_dominio::ContadoresDoDia;
 use std::path::{Path, PathBuf};
 
 #[derive(Debug, thiserror::Error)]
@@ -73,6 +74,11 @@ impl Armazenamento {
     }
 
     fn tentar_carregar(&self) -> Result<Configuracao, ErroDeCarga> {
+        self.tentar_ler_bruto()
+            .map(ConfiguracaoToml::para_configuracao)
+    }
+
+    fn tentar_ler_bruto(&self) -> Result<ConfiguracaoToml, ErroDeCarga> {
         let bruto =
             std::fs::read_to_string(&self.caminho).map_err(|fonte| ErroDeCarga::Leitura {
                 caminho: self.caminho.clone(),
@@ -89,7 +95,17 @@ impl Armazenamento {
                 esperada: VERSAO_ATUAL,
             });
         }
-        Ok(config.para_configuracao())
+        Ok(config)
+    }
+
+    /// So pra migracao: le o historico embutido num `config.toml` de antes
+    /// do SQLite, se houver. Melhor esforco — arquivo ausente, corrompido ou
+    /// de versao desconhecida so devolve lista vazia, sem mover pra
+    /// `.corrompido` (isso ja e responsabilidade de `carregar`).
+    pub fn historico_legado(&self) -> Vec<ContadoresDoDia> {
+        self.tentar_ler_bruto()
+            .map(ConfiguracaoToml::historico_legado)
+            .unwrap_or_default()
     }
 
     /// Melhor esforco: se o arquivo nao existir (primeira execucao) ou o
@@ -112,8 +128,8 @@ fn caminho_corrompido(caminho: &Path) -> PathBuf {
 mod testes {
     use super::*;
     use pomodoro_dominio::{
-        Atividade, Duracao, HistoricoDiario, NumeroDeSessao, PlanoDoCiclo, QuantidadeDeSessoes,
-        UrlDeAtividade,
+        Atividade, ContadoresDoDia, Data, Duracao, NumeroDeSessao, PlanoDoCiclo,
+        QuantidadeDeSessoes, UrlDeAtividade,
     };
     use std::sync::Arc;
 
@@ -125,7 +141,6 @@ mod testes {
                 Duracao::de_minutos(5),
             ),
             iniciar_automaticamente: true,
-            historico: HistoricoDiario::vazio(),
             posicao_do_widget: None,
         }
     }
@@ -138,7 +153,6 @@ mod testes {
                 Duracao::de_minutos(10),
             ),
             iniciar_automaticamente: false,
-            historico: HistoricoDiario::vazio(),
             posicao_do_widget: Some((120, 340)),
         }
     }
@@ -186,6 +200,53 @@ plano_individual = []
     }
 
     #[test]
+    fn historico_legado_le_o_historico_embutido_no_toml_antigo() {
+        let dir = tempfile::tempdir().expect("tempdir");
+        let caminho = dir.path().join("config.toml");
+        std::fs::write(
+            &caminho,
+            r#"
+versao = 1
+modo = "Global"
+duracao_global_foco_ms = 1500000
+duracao_global_pausa_ms = 300000
+iniciar_automaticamente = true
+plano_individual = []
+
+[[historico]]
+ano = 2026
+mes = 8
+dia = 22
+sessoes_concluidas = 3
+tempo_de_foco_ms = 4500000
+pausas_interrompidas = 1
+"#,
+        )
+        .expect("escrever toml com historico legado");
+        let armazenamento = Armazenamento::em(caminho);
+
+        let legado = armazenamento.historico_legado();
+
+        assert_eq!(legado.len(), 1);
+        assert_eq!(legado[0].dia_de_referencia(), Data::de(2026, 8, 22));
+        assert_eq!(legado[0].sessoes_concluidas(), 3);
+        assert_eq!(legado[0].pausas_interrompidas(), 1);
+    }
+
+    #[test]
+    fn historico_legado_de_toml_sem_o_campo_devolve_lista_vazia() {
+        let dir = tempfile::tempdir().expect("tempdir");
+        let armazenamento = Armazenamento::em(dir.path().join("config.toml"));
+
+        armazenamento.salvar(&config_padrao()).expect("salvar");
+
+        assert_eq!(
+            armazenamento.historico_legado(),
+            Vec::<ContadoresDoDia>::new()
+        );
+    }
+
+    #[test]
     fn round_trip_preserva_atividade_global_e_individual() {
         let dir = tempfile::tempdir().expect("tempdir");
         let armazenamento = Armazenamento::em(dir.path().join("config.toml"));
@@ -202,7 +263,6 @@ plano_individual = []
         let config = Configuracao {
             plano,
             iniciar_automaticamente: true,
-            historico: HistoricoDiario::vazio(),
             posicao_do_widget: None,
         };
 
@@ -329,7 +389,6 @@ url = "javascript:alert(1)"
                             Duracao::de_minutos(5),
                         ),
                         iniciar_automaticamente: true,
-                        historico: HistoricoDiario::vazio(),
                         posicao_do_widget: None,
                     };
                     armazenamento.salvar(&config)
