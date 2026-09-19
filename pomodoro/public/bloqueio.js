@@ -4,12 +4,14 @@
 // unico valor injetado basta: o relogio deriva mm:ss localmente, mesmo
 // padrao de useEstadoDoTimer.
 //
-// Unica chamada de invoke() desta janela: confirmar_urgencia, a unica saida
-// real do bloqueio. window.__TAURI__ so existe aqui por causa de
-// withGlobalTauri (tauri.conf.json) — este arquivo e servido cru pelo
-// Vite, sem bundler, entao nao ha import de @tauri-apps/api possivel. A
-// capability que libera o command e escopada so pra "bloqueio-*" (webview
-// da propria moldura), nunca alcanca o webview isolado "atividade".
+// Invokes desta janela: confirmar_urgencia (a unica saida real do
+// bloqueio) e definir_visibilidade_atividade (esconde/mostra o video ao
+// abrir/fechar o modal de confirmacao, que senao renderiza atras dele).
+// window.__TAURI__ so existe aqui por causa de withGlobalTauri
+// (tauri.conf.json) — este arquivo e servido cru pelo Vite, sem bundler,
+// entao nao ha import de @tauri-apps/api possivel. As capabilities que
+// liberam os commands sao escopadas so pra "bloqueio-*" (webview da
+// propria moldura), nunca alcancam o webview isolado "atividade".
 (function () {
   function formatar(ms) {
     var total = Math.max(0, Math.round(ms / 1000));
@@ -55,12 +57,23 @@
 
   aguardarMoldura();
 
+  // O modal fica atras da janela da atividade (video), que cobre o resto
+  // do monitor por cima da janela de bloqueio (PRD §7.6) — sem escondida
+  // ela, o modal renderiza mas nunca chega a aparecer na tela.
+  function definirVisibilidadeAtividade(visivel) {
+    if (window.__TAURI__ && window.__TAURI__.core) {
+      window.__TAURI__.core.invoke("definir_visibilidade_atividade", { visivel: visivel });
+    }
+  }
+
   var modal = document.getElementById("modal-urgencia");
   document.getElementById("botao-urgencia").addEventListener("click", function () {
     modal.hidden = false;
+    definirVisibilidadeAtividade(false);
   });
   document.getElementById("continuar").addEventListener("click", function () {
     modal.hidden = true;
+    definirVisibilidadeAtividade(true);
   });
   document.getElementById("confirmar").addEventListener("click", function () {
     if (window.__TAURI__ && window.__TAURI__.core) {

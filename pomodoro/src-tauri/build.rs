@@ -17,6 +17,7 @@ fn main() {
             "alterar_atividade_individual",
             "obter_contadores_do_dia",
             "confirmar_urgencia",
+            "definir_visibilidade_atividade",
             "alternar_widget",
         ]));
     tauri_build::try_build(attributes).expect("gerar manifesto de permissoes ACL do app");

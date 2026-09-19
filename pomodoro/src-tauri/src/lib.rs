@@ -11,7 +11,7 @@ mod verificador_de_vencimento;
 pub mod webview_atividade;
 mod widget;
 
-use comandos::bloqueio::confirmar_urgencia;
+use comandos::bloqueio::{confirmar_urgencia, definir_visibilidade_atividade};
 use comandos::historico::obter_contadores_do_dia;
 use comandos::plano::{
     alterar_atividade_global, alterar_atividade_individual, alterar_duracao_global_foco,
@@ -170,6 +170,7 @@ fn especificar_contrato() -> Builder<tauri::Wry> {
             alterar_atividade_individual,
             obter_contadores_do_dia,
             confirmar_urgencia,
+            definir_visibilidade_atividade,
             alternar_widget
         ])
         .events(collect_events![

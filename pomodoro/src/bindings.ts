@@ -33,6 +33,12 @@ export const commands = {
 	 */
 	confirmarUrgencia: () => __TAURI_INVOKE<void>("confirmar_urgencia"),
 	/**
+	 *  Mostra/esconde a janela da atividade sem sair do bloqueio (PRD §7.6) —
+	 *  chamado pelo proprio `bloqueio.js` ao abrir/fechar o modal de
+	 *  confirmacao da Urgencia, que senao renderiza atras da atividade.
+	 */
+	definirVisibilidadeAtividade: (visivel: boolean) => __TAURI_INVOKE<void>("definir_visibilidade_atividade", { visivel }),
+	/**
 	 *  Alterna mostrar/esconder a janela do widget (PRD §9) — chamado pelo
 	 *  botao "Widget" no cabecalho da janela principal.
 	 */

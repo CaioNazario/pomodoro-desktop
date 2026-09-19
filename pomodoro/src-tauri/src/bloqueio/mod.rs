@@ -66,9 +66,30 @@ impl GerenciadorDeBloqueio {
                 .unwrap_or(indice == 0);
             if e_a_principal {
                 if let Some(url) = atividade.url() {
-                    let webview: &tauri::Webview<_> = janela.as_ref();
                     let destino = url.destino_de_carregamento();
-                    let _ = crate::webview_atividade::abrir(&webview.window(), &destino);
+                    // Deixa livre a faixa superior onde mora a #zona-urgencia do
+                    // bloqueio.html (PRD §7.6, 74px logicos) — a atividade cobre
+                    // o resto do monitor, nunca essa faixa, senao nem o hover nem
+                    // o clique no botao de Urgencia chegam a acontecer.
+                    const MARGEM_URGENCIA_LOGICA: f64 = 74.0;
+                    let margem_fisica =
+                        (MARGEM_URGENCIA_LOGICA * monitor.scale_factor()).round() as i32;
+                    let posicao = *monitor.position();
+                    let tamanho = *monitor.size();
+                    let posicao_atividade = tauri::PhysicalPosition::new(
+                        posicao.x,
+                        posicao.y + margem_fisica,
+                    );
+                    let tamanho_atividade = tauri::PhysicalSize::new(
+                        tamanho.width,
+                        tamanho.height.saturating_sub(margem_fisica as u32),
+                    );
+                    let _ = crate::webview_atividade::abrir(
+                        &janela,
+                        &destino,
+                        posicao_atividade,
+                        tamanho_atividade,
+                    );
                 }
             }
         }
