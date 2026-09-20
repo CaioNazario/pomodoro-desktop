@@ -20,7 +20,13 @@ trap segurar_janela EXIT
 
 COMO_ROOT=()
 if [ "$(id -u)" -ne 0 ]; then
-  if command -v sudo >/dev/null 2>&1; then
+  # Sem terminal (duplo-clique, launcher grafico) o sudo nao tem como pedir
+  # senha, entao o pkexec vem primeiro (mesma logica do instalar.sh) —
+  # senao o comando com sudo falha silenciosamente sob `&&` e o script
+  # termina reportando "nada a remover" mesmo sem ter tentado de verdade.
+  if [ ! -t 0 ] && command -v pkexec >/dev/null 2>&1; then
+    COMO_ROOT=(pkexec)
+  elif command -v sudo >/dev/null 2>&1; then
     COMO_ROOT=(sudo)
   elif command -v pkexec >/dev/null 2>&1; then
     COMO_ROOT=(pkexec)

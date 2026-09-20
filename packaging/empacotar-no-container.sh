@@ -30,10 +30,18 @@ passo "dependencias do frontend"
 cd "$APP"
 pnpm install --frozen-lockfile --store-dir /build/pnpm-store
 
+BUNDLE="$CARGO_TARGET_DIR/release/bundle"
+
+# O volume de cache persiste entre builds — sem isso, um bump de versao
+# deixa o .deb/.rpm/.AppImage da versao ANTERIOR junto do novo aqui (nomes
+# de arquivo diferentes, o glob abaixo pega os dois), e o PKGBUILD acaba
+# apontando pro binario errado (visto ao vivo: pkgver=0.1.0 sobrevivendo a
+# um bump pra 0.3.0). So limpa o bundle/, nao o target/ inteiro — a
+# compilacao continua incremental.
+rm -rf "$BUNDLE"
+
 passo "build dos pacotes (deb, rpm, appimage)"
 pnpm exec tauri build
-
-BUNDLE="$CARGO_TARGET_DIR/release/bundle"
 
 passo "montando a pasta de instalacao"
 find "$SAIDA" -mindepth 1 -delete
